@@ -18,7 +18,8 @@ login_manager = LoginManager(app)
 def load_user(id):
 	return User.query.get(int(id))
 
-# Schema
+# SCHEMA
+
 class User(db.Model):
 	__tablename__ = 'users'
 
@@ -48,6 +49,24 @@ class User(db.Model):
 		class Meta:
 			fields = ("id", "email", "salary", "last_active_date")
 
+class ExpenseType(db.Model):
+	__tablename__ = 'expense_types'
+
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String, nullable=False)
+	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+	user = db.relationship('User', backref=db.backref('expense_types', lazy='dynamic'))
+
+	def __init__(self, name, user_id):
+		self.name = name
+		self.user_id = user_id
+
+	class Serializer(Serializer):
+		class Meta:
+			fields =("id", "name", "user_id")
+
+# ROUTES
+
 @app.route('/')
 def index():
 	return render_template('home.html')
@@ -55,6 +74,16 @@ def index():
 @app.route('/dash')
 @login_required
 def dashboard():
+	return render_template('dashboard.html')
+
+@app.route('/expensetypes/create')
+@login_required
+def create_expense_type():
+	pass
+
+@app.route('/expensetypes/create', methods=['POST'])
+@login_required
+def create_expense_type_post():
 	pass
 
 @app.route('/user/register')
