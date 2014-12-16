@@ -54,3 +54,14 @@ a {
 	text-decoration: none;
 	padding:10px;
 }
+
+.not-fat {
+	width: 60%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.just-centered {
+	margin-left: auto;
+	margin-right: auto;
+}
