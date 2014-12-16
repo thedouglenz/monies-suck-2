@@ -77,6 +77,7 @@ class Transaction(db.Model):
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 	user = db.relationship('User',  backref=db.backref('transactions', lazy='dynamic'))
+	expense = db.relationship('ExpenseType', backref=db.backref('expense_types', lazy='dynamic'))
 
 	def __init__(self, date, desc, e_type_id, amount, user_id):
 		self.trans_date = date
@@ -105,7 +106,14 @@ def create_db():
 def dashboard():
 	transactions = current_user.transactions.order_by(Transaction.trans_date).all()
 	expensetypes = current_user.expense_types.order_by(ExpenseType.name).all()
-	return render_template('dashboard.html', expensetypes=expensetypes, transactions=transactions)
+
+	# this month stuff
+	totals = {}
+	for e in expensetypes:
+		totals[e.name] = db.session.query(db.func.sum(Transaction.amount).label('sum')).filter(Transaction.expense_type_id == e.id).scalar()
+	# / this month stuff
+
+	return render_template('dashboard.html', expensetypes=expensetypes, transactions=transactions, totals=totals)
 
 @app.route('/expensetypes/create')
 @login_required

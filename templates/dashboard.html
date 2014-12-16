@@ -5,6 +5,24 @@
 		<p>Dashboard : {{ current_user.email }}</p>
 	</div>
 	<div class="pure-u-1">
+		<p class="section-header">Monthly Totals</p>
+		<table class="pure-table">
+			<thead>
+				<tr>
+					<th>Category</th><th>Total</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for c in totals %}
+					<tr>
+						<td>{{ c }}</td><td>{% if totals[c] %} $ {{ totals[c] }} {% else %} $ 0.00 {% endif %}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		{{ totals }}
+	</div>
+	<div class="pure-u-1">
 		<p class="section-header">Transactions</p>
 		<table class="pure-table">
 			<thead>
@@ -15,7 +33,7 @@
 			<tbody>
 				{% for t in transactions %}
 				<tr>
-					<td>{{ t.trans_date }}</td><td>{{ t.desc }}</td><td>{{ t.expense_type_id }}</td><td>{{ t.amount }}</td>
+					<td>{{ t.trans_date }}</td><td>{{ t.desc }}</td><td>{{ t.expense.name }}</td><td>$ {{ t.amount }}</td>
 				</tr>
 				{% else %}
 				<tr>
@@ -31,7 +49,7 @@
 		<div id="list-container">
 			<ul>
 				{% for expense in expensetypes %}
-					<li> <span style="color:red;">{{ expense.id }}</span> {{ expense.name }} </li>
+					<li> <span style="color:red;">{{ expense.name }}</span></li>
 				{% else %}
 					You don't spend money on anything! Congrats!
 				{% endfor %}
