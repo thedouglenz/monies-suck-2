@@ -1,5 +1,5 @@
 from __future__ import print_function
-import os
+import os, datetime
 from flask import Flask, jsonify, request, abort, redirect, render_template, url_for
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager, login_required, login_user, current_user, logout_user
@@ -108,9 +108,10 @@ def dashboard():
 	expensetypes = current_user.expense_types.order_by(ExpenseType.name).all()
 
 	# this month stuff
+	this_month = datetime.datetime.now().month
 	totals = {}
 	for e in expensetypes:
-		totals[e.name] = db.session.query(db.func.sum(Transaction.amount).label('sum')).filter(Transaction.expense_type_id == e.id).scalar()
+		totals[e.name] = db.session.query(db.func.sum(Transaction.amount).label('sum')).filter(Transaction.expense_type_id == e.id, db.func.extract('month', Transaction.trans_date) == this_month).scalar()
 	# / this month stuff
 
 	return render_template('dashboard.html', expensetypes=expensetypes, transactions=transactions, totals=totals)
