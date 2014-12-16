@@ -1,5 +1,5 @@
 from __future__ import print_function
-import os, datetime
+import os, datetime, calendar
 from flask import Flask, jsonify, request, abort, redirect, render_template, url_for
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager, login_required, login_user, current_user, logout_user
@@ -109,12 +109,13 @@ def dashboard():
 
 	# this month stuff
 	this_month = datetime.datetime.now().month
+	month_name = calendar.month_name[this_month]
 	totals = {}
 	for e in expensetypes:
 		totals[e.name] = db.session.query(db.func.sum(Transaction.amount).label('sum')).filter(Transaction.expense_type_id == e.id, db.func.extract('month', Transaction.trans_date) == this_month).scalar()
 	# / this month stuff
 
-	return render_template('dashboard.html', expensetypes=expensetypes, transactions=transactions, totals=totals)
+	return render_template('dashboard.html', expensetypes=expensetypes, transactions=transactions, totals=totals, month_name=month_name)
 
 @app.route('/expensetypes/create')
 @login_required
