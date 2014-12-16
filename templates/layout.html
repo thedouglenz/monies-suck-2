@@ -16,7 +16,11 @@
   <body>
   	<div class="pure-g">
   		<div class="pure-u-1" id="header-content">
-  			<h2>monies suck</h2>
+  			<h2 style="display:inline;">monies suck </h2>
+        {% if current_user.is_authenticated() %}
+          <a href="{{ url_for('logout') }}" style="color:white;text-decoration:none;"> ---- logout </a>
+          <a href="{{ url_for('dashboard') }}" style="color:white;text-decoration:none;"> ---- dashboard  </a>
+        {% endif %}
   		</div>
   		<div class="pure-u-1" id="main-content-container">
 	  		{% block content %}{% endblock %}

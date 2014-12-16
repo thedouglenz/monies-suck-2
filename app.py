@@ -129,7 +129,6 @@ def create_expense_type_post():
 	db.session.commit()
 	return redirect(url_for('dashboard'))
 
-
 @app.route('/transactions/add')
 @login_required
 def add_transaction():
@@ -174,6 +173,12 @@ def login():
 		return redirect(url_for('dashboard'))
 	else:
 		abort(401)
+
+@app.route('/logout')
+@login_required
+def logout():
+	logout_user()
+	return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
