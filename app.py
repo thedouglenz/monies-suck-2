@@ -29,6 +29,9 @@ class User(db.Model):
 	salary = db.Column(db.Numeric)
 	last_active_date = db.Column(db.DateTime(timezone=True), index=True)
 
+	transactions = db.relationship('Transaction', lazy='dynamic')
+	expensetypes = db.relationship('ExpenseType', lazy='dynamic')
+
 	def __init__(self, email, password):
 		self.email = email
 		self.password = password
@@ -55,7 +58,6 @@ class ExpenseType(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String, nullable=False)
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-	user = db.relationship('User', backref=db.backref('expense_types', lazy='dynamic'))
 
 	def __init__(self, name, user_id):
 		self.name = name
@@ -65,15 +67,33 @@ class ExpenseType(db.Model):
 		class Meta:
 			fields =("id", "name", "user_id")
 
+class Transaction(db.Model):
+	__tablename__ = 'transactions'
+
+	id = db.Column(db.Integer, primary_key=True)
+	trans_date = db.Column(db.DateTime(timezone=True), index=True, nullable=False)
+	desc = db.Column(db.String, nullable=False)
+	amount = db.Column(db.Numeric, nullable=False)
+	expense_type_id = db.Column(db.Integer, db.ForeignKey('expense_types.id'))
+	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+
+
 # ROUTES
 
 @app.route('/')
 def index():
 	return render_template('home.html')
 
+@app.route('/create_db')
+def create_db():
+	db.create_all();
+	return "Database generated"
+
 @app.route('/dash')
 @login_required
 def dashboard():
+	transactions = current_user.transactions.order_by(Transaction.trans_date).all()
 	return render_template('dashboard.html')
 
 @app.route('/expensetypes/create')
@@ -84,6 +104,16 @@ def create_expense_type():
 @app.route('/expensetypes/create', methods=['POST'])
 @login_required
 def create_expense_type_post():
+	pass
+
+@app.route('/transactions/add')
+@login_required
+def add_transaction():
+	pass
+
+@app.route('/transactions/add')
+@login_required
+def add_transaction_post():
 	pass
 
 @app.route('/user/register')

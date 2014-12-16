@@ -1,17 +1,23 @@
 {% extends "layout.html" %}
 {% block content %}
 <div>
-	Welcome to monies suck, my friend. Login!
-	<form method="POST" action="{{ url_for('login') }}" class="pure-form pure-form-stacked">
-		<fieldset>
-			<input type="email" name="email" class="pure-input-1" placeholder="email address">
-			<input type="password" name="password" class="pure-input-1" placeholder="password">
-			<button type="submit" class="pure-button button-primary pure-input-1"> Login </button>
-		</fieldset>
-	</form>
-	<div class="centered">
-		<p>Need an account?</p>
-		<a href="{{ url_for('register_user') }}">Register</a>
+	<div class="pure-g">
+		<div class="pure-u-1 top-of-any-page">
+			Welcome to monies suck, my friend. Login!
+		</div>
+		<div class="pure-u-1">
+			<form method="POST" action="{{ url_for('login') }}" class="pure-form pure-form-stacked">
+				<fieldset>
+					<input type="email" name="email" class="pure-input-1" placeholder="email address">
+					<input type="password" name="password" class="pure-input-1" placeholder="password">
+					<button type="submit" class="pure-button button-primary pure-input-1"> Login </button>
+				</fieldset>
+			</form>
+		</div>
+		<div class="pure-u-1" style="text-align:center;">
+			<p>Need an account?</p>
+			<a class="pure-button" href="{{ url_for('register_user') }}">Register</a>
+		</div>
 	</div>
 </div>
 {% endblock %}

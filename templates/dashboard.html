@@ -1,8 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
 <div class="pure-g">
-	<div class="pure-u-1">
+	<div class="pure-u-1 top-of-any-page">
 		<p>Dashboard : {{ current_user.email }}</p>
 	</div>
 	<div class="pure-u-1">
-
+		<p class="section-header">Transactions</p>
+		<table class="pure-table">
+			<thead>
+				<tr>
+					<th>Date</th><th>Description</th><th>Amount</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for t in transactions %}
+				<tr>
+					<td>{{ t.date }}</td><td>{{ t.desc }}</td><td>{{ t.amount }}</td>
+				</tr>
+				{% else %}
+				<tr>
+					<td colspan="3">No transactions added yet</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 	</div>
 </div>
+{% endblock %}
