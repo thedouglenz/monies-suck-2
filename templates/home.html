@@ -1,6 +1,17 @@
 {% extends "layout.html" %}
 {% block content %}
 <div>
-	Welcome to monies suck, my friend.
+	Welcome to monies suck, my friend. Login!
+	<form method="POST" action="{{ url_for('login') }}" class="pure-form pure-form-stacked">
+		<fieldset>
+			<input type="email" name="email" class="pure-input-1" placeholder="email address">
+			<input type="password" name="password" class="pure-input-1" placeholder="password">
+			<button type="submit" class="pure-button button-primary pure-input-1"> Login </button>
+		</fieldset>
+	</form>
+	<div class="centered">
+		<p>Need an account?</p>
+		<a href="{{ url_for('register_user') }}">Register</a>
+	</div>
 </div>
 {% endblock %}

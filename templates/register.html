@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block content %}
+<div>
+	Registering? We just need your email and a password.
+	<form method="POST" action="{{ url_for('register_user_post') }}" class="pure-form pure-form-stacked">
+		<fieldset>
+			<input type="email" name="email" class="pure-input-1" placeholder="email address">
+			<input type="password" name="password" class="pure-input-1" placeholder="password">
+			<button type="submit" class="pure-button button-primary pure-input-1">Register</button>
+		</fieldset>
+	</form>
+</div>
+{% endblock %}
