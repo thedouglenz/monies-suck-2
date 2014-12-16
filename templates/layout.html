@@ -18,8 +18,8 @@
   		<div class="pure-u-1" id="header-content">
   			<h2 style="display:inline;">monies suck </h2>
         {% if current_user.is_authenticated() %}
-          <a href="{{ url_for('logout') }}" style="color:white;text-decoration:none;"> ---- logout </a>
-          <a href="{{ url_for('dashboard') }}" style="color:white;text-decoration:none;"> ---- dashboard  </a>
+          <a href="{{ url_for('dashboard') }}" style="color:white;text-decoration:none;"> <i class="fa fa-bar-chart"></i> dashboard</a>
+          <a href="{{ url_for('logout') }}" style="color:white;text-decoration:none;"> <i class="fa fa-sign-out"></i> logout </a>
         {% endif %}
   		</div>
   		<div class="pure-u-1" id="main-content-container">

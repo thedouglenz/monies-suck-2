@@ -12,14 +12,37 @@ a {
 	text-decoration: underline;
 }
 
+/* Custom button styles */
 .pure-button {
 	color: #339933;
 }
+/* Custom button styles */
 
+/* Font styles */
 .pure-g [class *= "pure-u"] {
 	font-family: 'Roboto Slab', serif;
 }
+/* Font styles */
 
+/* pure-table styles */
+
+.pure-table {
+	border: 1px solid #339933;
+}
+
+.pure-table thead {
+	color: white;
+	background-color: #339933;
+}
+
+.pure-table tbody {
+	background-color: white;
+}
+
+/* pure-table styles */
+
+
+/* Custom random styles */
 #header-content {
 	background-color: #339933;
 	color: White;
@@ -65,3 +88,5 @@ a {
 	margin-left: auto;
 	margin-right: auto;
 }
+
+/* Custom random styles */
