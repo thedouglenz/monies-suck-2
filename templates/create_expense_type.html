@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block content %}
+<div>
+	<div class="pure-g">
+		<div class="pure-u-1 top-of-any-page">
+			Name a new category to start tracking
+		</div>
+		<div class="pure-u-1">
+			<form method="POST" action="{{ url_for('create_expense_type_post') }}" class="pure-form pure-form-stacked">
+				<fieldset>
+					<input type="text" name="name" class="pure-input-1" placeholder="Category name">
+					<button type="submit" class="pure-button button-primary pure-input-1"> Add </button>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}

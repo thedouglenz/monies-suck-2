@@ -29,9 +29,6 @@ class User(db.Model):
 	salary = db.Column(db.Numeric)
 	last_active_date = db.Column(db.DateTime(timezone=True), index=True)
 
-	transactions = db.relationship('Transaction', lazy='dynamic')
-	expensetypes = db.relationship('ExpenseType', lazy='dynamic')
-
 	def __init__(self, email, password):
 		self.email = email
 		self.password = password
@@ -56,8 +53,10 @@ class ExpenseType(db.Model):
 	__tablename__ = 'expense_types'
 
 	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String, nullable=False)
+	name = db.Column(db.String, unique=True, nullable=False)
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+	user = db.relationship('User',  backref=db.backref('expense_types',lazy='dynamic'))
 
 	def __init__(self, name, user_id):
 		self.name = name
@@ -77,7 +76,18 @@ class Transaction(db.Model):
 	expense_type_id = db.Column(db.Integer, db.ForeignKey('expense_types.id'))
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
+	user = db.relationship('User',  backref=db.backref('transactions', lazy='dynamic'))
 
+	def __init__(self, date, desc, e_type_id, amount, user_id):
+		self.trans_date = date
+		self.desc = desc
+		self.expense_type_id = e_type_id
+		self.amount = amount
+		self.user_id = user_id
+
+	class Serializer(Serializer):
+		class Meta:
+			fields = ("id", "trans_date", "desc", "expense_type_id", "amount", "user_id")
 
 # ROUTES
 
@@ -94,27 +104,42 @@ def create_db():
 @login_required
 def dashboard():
 	transactions = current_user.transactions.order_by(Transaction.trans_date).all()
-	return render_template('dashboard.html')
+	expensetypes = current_user.expense_types.order_by(ExpenseType.name).all()
+	return render_template('dashboard.html', expensetypes=expensetypes, transactions=transactions)
 
 @app.route('/expensetypes/create')
 @login_required
 def create_expense_type():
-	pass
+	return render_template('create_expense_type.html')
 
 @app.route('/expensetypes/create', methods=['POST'])
 @login_required
 def create_expense_type_post():
-	pass
+	new_et = ExpenseType(request.form['name'], current_user.id)
+	db.session.add(new_et)
+	db.session.commit()
+	return redirect(url_for('dashboard'))
+
 
 @app.route('/transactions/add')
 @login_required
 def add_transaction():
-	pass
+	expensetypes = current_user.expense_types.order_by(ExpenseType.name).all()
+	return render_template('add_transaction.html', expensetypes=expensetypes)
 
-@app.route('/transactions/add')
+@app.route('/transactions/add', methods=["POST"])
 @login_required
 def add_transaction_post():
-	pass
+	t_date = request.form['trans_date']
+	desc = request.form['desc']
+	e_type_id = request.form['expensetype']
+	amount = request.form['amount']
+	user_id = current_user.id
+
+	new_transaction = Transaction(t_date, desc, e_type_id, amount, user_id);
+	db.session.add(new_transaction)
+	db.session.commit()
+	return redirect(url_for('dashboard'))
 
 @app.route('/user/register')
 def register_user():

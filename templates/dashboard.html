@@ -9,13 +9,13 @@
 		<table class="pure-table">
 			<thead>
 				<tr>
-					<th>Date</th><th>Description</th><th>Amount</th>
+					<th>Date</th><th>Description</th><th>Category</th><th>Amount</th>
 				</tr>
 			</thead>
 			<tbody>
 				{% for t in transactions %}
 				<tr>
-					<td>{{ t.date }}</td><td>{{ t.desc }}</td><td>{{ t.amount }}</td>
+					<td>{{ t.trans_date }}</td><td>{{ t.desc }}</td><td>{{ t.expense_type_id }}</td><td>{{ t.amount }}</td>
 				</tr>
 				{% else %}
 				<tr>
@@ -24,6 +24,20 @@
 				{% endfor %}
 			</tbody>
 		</table>
+		<a href="{{ url_for('add_transaction') }}" class="pure-button">add</a>
+	</div>
+	<div class="pure-u-1">
+		<p class="section-header">Things you spend on</p>
+		<div id="list-container">
+			<ul>
+				{% for expense in expensetypes %}
+					<li> <span style="color:red;">{{ expense.id }}</span> {{ expense.name }} </li>
+				{% else %}
+					You don't spend money on anything! Congrats!
+				{% endfor %}
+			</ul>
+		</div>
+		<a href="{{ url_for('create_expense_type') }}" class="pure-button">add</a>
 	</div>
 </div>
 {% endblock %}

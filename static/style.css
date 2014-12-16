@@ -40,3 +40,17 @@ a {
 	font-weight: bold;
 	font-size:14px;
 }
+
+#list-container ul {
+	margin:0;
+	padding:10px;
+	list-style-type: none;
+	/*text-align: center;*/
+}
+
+#list-container ul li {
+	color: Orange;
+	display: inline;
+	text-decoration: none;
+	padding:10px;
+}
