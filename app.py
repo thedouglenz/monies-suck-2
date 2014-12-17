@@ -172,6 +172,16 @@ def delete_transaction(trans_id):
 		db.session.commit()
 	return redirect(url_for('dashboard'))
 
+@app.route('/transactions/<int:trans_id>/update_exp', methods=['POST'])
+def update_trans_exp(trans_id):
+	t = Transaction.query.get(trans_id)
+	if not t.user_id == current_user.id:
+		abort(401)
+	if t:
+		t.expense_type_id = request.form['expense_id']
+		db.session.commit()
+	return redirect(url_for('dashboard'))
+
 @app.route('/user/register')
 def register_user():
 	return render_template('register.html')

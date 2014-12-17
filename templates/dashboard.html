@@ -32,7 +32,16 @@
 			<tbody>
 				{% for t in transactions %}
 				<tr>
-					<td>{{ t.trans_date }}</td><td>{{ t.desc }}</td><td>{{ t.expense.name }}</td><td>$ {{ t.amount }}</td><td><a class="trash-button" href="{{ url_for('delete_transaction', trans_id=t.id) }}"><i class="fa fa-trash"></i></a></td>
+					<td>{{ t.trans_date }}</td><td>{{ t.desc }}</td><td>  {% if t.expense %}{{ t.expense.name }} {% else %} 
+						<form method="POST" action="{{ url_for('update_trans_exp', trans_id=t.id) }}">
+							<select name="expense_id">
+								{% for expense in expensetypes %}
+									<option value="{{ expense.id }}" > {{ expense.name }} </option>
+								{% endfor %}
+							</select>
+							<button type="submit">Ok</button>
+						</form>
+					{% endif %}</td><td>$ {{ t.amount }}</td><td><a class="trash-button" href="{{ url_for('delete_transaction', trans_id=t.id) }}"><i class="fa fa-trash"></i></a></td>
 				</tr>
 				{% else %}
 				<tr>
