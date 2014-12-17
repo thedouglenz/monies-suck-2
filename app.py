@@ -130,6 +130,17 @@ def create_expense_type_post():
 	db.session.commit()
 	return redirect(url_for('dashboard'))
 
+@app.route('/expensetypes/<int:expense_type_id>/delete')
+@login_required
+def delete_expense_type(expense_type_id):
+	e = ExpenseType.query.get(expense_type_id)
+	if not e.user_id == current_user.id:
+		abort(401)
+	if e:
+		db.session.delete(e)
+		db.session.commit()
+	return redirect(url_for('dashboard'))
+
 @app.route('/transactions/add')
 @login_required
 def add_transaction():

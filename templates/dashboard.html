@@ -48,7 +48,7 @@
 		<div id="list-container">
 			<ul>
 				{% for expense in expensetypes %}
-					<li> <span style="color:red;">{{ expense.name }}</span></li>
+					<li><span style="color:red;">{{ expense.name }}</span><a class="trash-button" href="{{ url_for('delete_expense_type', expense_type_id=expense.id) }}"><i class="fa fa-trash"></i></a></li>
 				{% else %}
 					You don't spend money on anything! Congrats!
 				{% endfor %}
