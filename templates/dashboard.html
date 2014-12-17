@@ -14,6 +14,10 @@
 					<tr>
 						<td>{{ c }}</td><td>{% if totals[c] %} $ {{ totals[c] }} {% else %} $ 0.00 {% endif %}</td>
 					</tr>
+				{% else %}
+					<tr>
+						<td colspan="2"> No data to show here until you add spending categories!</td>
+					</tr>
 				{% endfor %}
 			</tbody>
 		</table>
