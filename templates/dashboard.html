@@ -26,13 +26,13 @@
 		<table class="pure-table">
 			<thead>
 				<tr>
-					<th>Date</th><th>Description</th><th>Category</th><th>Amount</th>
+					<th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th></th>
 				</tr>
 			</thead>
 			<tbody>
 				{% for t in transactions %}
 				<tr>
-					<td>{{ t.trans_date }}</td><td>{{ t.desc }}</td><td>{{ t.expense.name }}</td><td>$ {{ t.amount }}</td>
+					<td>{{ t.trans_date }}</td><td>{{ t.desc }}</td><td>{{ t.expense.name }}</td><td>$ {{ t.amount }}</td><td><a class="trash-button" href="{{ url_for('delete_transaction', trans_id=t.id) }}"><i class="fa fa-trash"></i></a></td>
 				</tr>
 				{% else %}
 				<tr>
@@ -48,7 +48,7 @@
 		<div id="list-container">
 			<ul>
 				{% for expense in expensetypes %}
-					<li><span style="color:red;">{{ expense.name }}</span><a class="trash-button" href="{{ url_for('delete_expense_type', expense_type_id=expense.id) }}"><i class="fa fa-trash"></i></a></li>
+					<li><span style="color:black;">{{ expense.name }}</span><a class="trash-button" href="{{ url_for('delete_expense_type', expense_type_id=expense.id) }}"><i class="fa fa-trash"></i></a></li>
 				{% else %}
 					You don't spend money on anything! Congrats!
 				{% endfor %}

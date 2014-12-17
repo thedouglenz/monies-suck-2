@@ -161,6 +161,17 @@ def add_transaction_post():
 	db.session.commit()
 	return redirect(url_for('dashboard'))
 
+@app.route('/transactions/<int:trans_id>/delete')
+@login_required
+def delete_transaction(trans_id):
+	t = Transaction.query.get(trans_id)
+	if not t.user_id == current_user.id:
+		abort(401)
+	if t:
+		db.session.delete(t)
+		db.session.commit()
+	return redirect(url_for('dashboard'))
+
 @app.route('/user/register')
 def register_user():
 	return render_template('register.html')

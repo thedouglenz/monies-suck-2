@@ -72,10 +72,10 @@ a {
 }
 
 #list-container ul li {
-	color: Orange;
+	background-color: #ADD6AD;
 	display: inline;
 	text-decoration: none;
-	padding:10px;
+	padding: 5px 10px 5px 10px;
 }
 
 .not-fat {
@@ -93,7 +93,7 @@ a {
 
 /* fa styles */
 .trash-button {
-	color: black;
+	color: #333399;
 	padding-left:7px;
 }
 /* fa styles */
