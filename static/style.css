@@ -97,3 +97,14 @@ a {
 	padding-left:7px;
 }
 /* fa styles */
+
+/* app specific */
+.app-color {
+	color:#333399;
+}
+
+.dash-nav {
+	padding-left:10px;
+	padding-right:10px;
+}
+/* app specific */
