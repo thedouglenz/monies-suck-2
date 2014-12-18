@@ -94,7 +94,10 @@ class Transaction(db.Model):
 
 @app.route('/')
 def index():
-	return render_template('home.html')
+	if current_user.is_authenticated(): # they're already logged in
+		return redirect(url_for('dashboard'))
+	else: # they're not already logged in
+		return render_template('home.html')
 
 @app.route('/create_db')
 def create_db():
