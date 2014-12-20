@@ -6,6 +6,8 @@ from flask.ext.login import LoginManager, login_required, login_user, current_us
 from flask.ext.bcrypt import Bcrypt
 from marshmallow import Serializer
 
+from config import TRANSACTIONS_PER_PAGE
+
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
@@ -104,10 +106,11 @@ def create_db():
 	db.create_all();
 	return "Database generated"
 
-@app.route('/dash')
+@app.route('/dash/<int:page>')
+@app.route('/dash/')
 @login_required
-def dashboard():
-	transactions = current_user.transactions.order_by(Transaction.trans_date).all()
+def dashboard(page=1):
+	transactions = current_user.transactions.order_by(Transaction.trans_date.desc()).paginate(page, TRANSACTIONS_PER_PAGE, False)
 	expensetypes = current_user.expense_types.order_by(ExpenseType.name).all()
 
 	# this month stuff

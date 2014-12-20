@@ -1,0 +1,2 @@
+# pagination
+TRANSACTIONS_PER_PAGE = 5

@@ -34,7 +34,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{% for t in transactions %}
+				{% for t in transactions.items %}
 				<tr>
 					<td>{{ t.trans_date }}</td><td>{{ t.desc }}</td><td>  {% if t.expense %}{{ t.expense.name }} {% else %} 
 						<form method="POST" action="{{ url_for('update_trans_exp', trans_id=t.id) }}">
@@ -54,6 +54,21 @@
 				{% endfor %}
 			</tbody>
 		</table>
+		<div class="pure-menu pure-menu-open pure-menu-horizontal" id="dash-paginator">
+			<a href="#" class="pure-menu-heading">Navigate</a>
+			<ul>
+				{% if transactions.has_prev %}
+					<li><a href="{{ url_for('dashboard', page=transactions.prev_num) }}">newer </a></li>
+				{% else %}
+					<li class="pure-menu-disabled"><a href="#"> newer </a></li>
+				{% endif %}
+				{% if transactions.has_next %}
+					<li><a href="{{ url_for('dashboard', page=transactions.next_num) }}"> older </a></li>
+				{% else %}
+				<li class="pure-menu-disabled"><a href="#"> older </a></li>
+				{% endif %}
+			</ul>
+		</div>
 		<a href="{{ url_for('add_transaction') }}" class="pure-button">add</a>
 	</div>
 	<div class="pure-u-1">

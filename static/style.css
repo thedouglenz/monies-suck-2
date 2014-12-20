@@ -109,4 +109,7 @@ a {
 	padding-left:10px;
 	padding-right:10px;
 }
+#dash-paginator {
+	background:inherit;
+}
 /* app specific */
