@@ -6,6 +6,8 @@ from flask.ext.login import LoginManager, login_required, login_user, current_us
 from flask.ext.bcrypt import Bcrypt
 from marshmallow import Serializer
 
+import random, json, decimal
+
 from config import TRANSACTIONS_PER_PAGE
 
 app = Flask(__name__)
@@ -106,6 +108,25 @@ def create_db():
 	db.create_all();
 	return "Database generated"
 
+# FUNCS
+def random_color():
+	# stolen from Dmitry Dubovitsky http://stackoverflow.com/a/14019260/3250878 ; http://stackoverflow.com/questions/13998901/generating-a-random-hex-color-in-python
+	r = lambda: random.randint(0,255)
+	return ('#%02X%02X%02X' % (r(),r(),r()))
+
+def get_monthly_totals(month_num):
+	totals = {}
+	expensetypes = current_user.expense_types.order_by(ExpenseType.name).all()
+	for e in expensetypes:
+		totals[e.name] = db.session.query(db.func.sum(Transaction.amount).label('sum')).filter(Transaction.expense_type_id == e.id, db.func.extract('month', Transaction.trans_date) == month_num).scalar()
+	return totals
+
+def decimal_default(obj):
+	if isinstance(obj, decimal.Decimal):
+		return float(obj)
+	raise TypeError
+
+
 @app.route('/dash/<int:page>')
 @app.route('/dash/')
 @login_required
@@ -122,6 +143,21 @@ def dashboard(page=1):
 	# / this month stuff
 
 	return render_template('dashboard.html', expensetypes=expensetypes, transactions=transactions, totals=totals, month_name=month_name)
+
+@app.route('/api/v1/totals/month')
+@login_required
+def monthly_totals():
+	data = []
+	tm = get_monthly_totals(datetime.datetime.now().month)
+	for t in tm:
+		data.append({
+			'value':		tm[t],
+			'color':		random_color(),
+			'highlight':	random_color(),
+			'label' :	t
+			})
+	return json.dumps(data, default=decimal_default)
+
 
 @app.route('/expensetypes/create')
 @login_required

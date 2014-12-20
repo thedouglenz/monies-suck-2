@@ -23,7 +23,7 @@
 		</table>
 	</div>
 	<div class="pure-u-1-2">
-		<p>Awesome Chart</p>
+		<canvas id="dash-chart" width="400" height="400"></canvas>
 	</div>
 	<div class="pure-u-1">
 		<p class="section-header">Transactions</p>
@@ -85,4 +85,14 @@
 		<a href="{{ url_for('create_expense_type') }}" class="pure-button">add</a>
 	</div>
 </div>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		// Handle dash chart
+		$.getJSON("../api/v1/totals/month", function(data){
+			var ctx = document.getElementById("dash-chart").getContext("2d");
+			var dashChart = new Chart(ctx).PolarArea(data);
+		});
+	});
+</script>
 {% endblock %}
