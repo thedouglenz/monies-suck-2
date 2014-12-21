@@ -13,7 +13,7 @@ If you want to contribute to this project you will need to set up your environme
 4. run **virtualenv venv**
 5. **source venv/bin/activate**
 6. **pip install -r requirements.txt**
-7. Install the heroku toolbelt globally on whatever system you are on
+7. Install the heroku toolbelt globally on whatever system you are on: https://toolbelt.heroku.com/
 8. run **foreman start**
 9. create a file called '.env' in the project directory
 10. the next instruction is going to require you to setup a postgresql database so do that now
