@@ -15,7 +15,11 @@ If you want to contribute to this project you will need to set up your environme
 6. ** pip install -r requirements.txt **
 7. Install the heroku toolbelt globally on whatever system you are on
 8. run ** foreman start **
-9. Visit localhost:5000 to see the application
+9. create a file called '.env' in the project directory
+10. Fill it with 2 separate lines: 'DATABASE_URL=postgres://<dbpassword>:<dbuser>@localhost/<dbname>' (replacing <...> with appropriate values) and 'PORT=5000' (that's the second line to put in .env)
+11. You will want to ignore the venv/ directory and this .env file in the .gitignore file in the project directory
+12. visit localhost:5000/create_db to generate the database
+13. visit localhost:5000 to see the application
 
 
 
