@@ -11,10 +11,10 @@ If you want to contribute to this project you will need to set up your environme
 2. Clone this repo
 3. Goto the project directory
 4. run **virtualenv venv**
-5. ** source venv/bin/activate **
-6. ** pip install -r requirements.txt **
+5. **source venv/bin/activate**
+6. **pip install -r requirements.txt**
 7. Install the heroku toolbelt globally on whatever system you are on
-8. run ** foreman start **
+8. run **foreman start**
 9. create a file called '.env' in the project directory
 10. the next instruction is going to require you to setup a postgresql database so do that now
 11. Fill it with 2 separate lines: 'DATABASE_URL=postgres://<dbpassword>:<dbuser>@localhost/<dbname>' (replacing <...> with appropriate values) and 'PORT=5000' (that's the second line to put in .env)
