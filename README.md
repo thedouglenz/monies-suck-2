@@ -4,7 +4,7 @@ monies-suck-2
 A better implementation of a previously written (unfinished) financial management app
 
 ## Dev setup instructions
-If you want to contribute to this project you will need to set up your environment. This write-up assumes you're using either Ubuntu or OSX.
+If you want to contribute to this project you will need to set up your environment. This write-up assumes you're using either Ubuntu or OSX. To test locally, you will want to have a local postgres server running. On OS X, http://postgresapp.com/. On Ubuntu, you will have to fend for yourself but this will help: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-14-04 
 
 ### Running locally
 1. Make sure you have pip, and virtualenv installed globally on your system.
