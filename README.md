@@ -23,7 +23,9 @@ If you want to contribute to this project you will need to set up your environme
 14. visit localhost:5000 to see the application
 
 ### Why do we do all the things above?
+
 Following is an explanation of each item above:
+
 1. These should belong to any python developer's toolbox
 2. You have to have the files
 3. To run some commands and to work in that directory now and in the future
