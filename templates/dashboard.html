@@ -12,7 +12,7 @@
 			<tbody>
 				{% for c in totals %}
 					<tr>
-						<td>{{ c }}</td><td>{% if totals[c] %} $ {{ totals[c] }} {% else %} $ 0.00 {% endif %}</td>
+						<td>{{ c[0] }}</td><td>{% if c[1] %} $ {{ c[1] }} {% else %} $ 0.00 {% endif %}</td>
 					</tr>
 				{% else %}
 					<tr>
@@ -37,7 +37,7 @@
 			<tbody>
 				{% for t in transactions.items %}
 				<tr>
-					<td>{{ t.trans_date }}</td><td>{{ t.desc }}</td><td>  {% if t.expense %}{{ t.expense.name }} {% else %} 
+					<td>{{ t.trans_date }}</td><td>{{ t.desc }}</td><td>  {% if t.expense %}{{ t.expense.name }} {% else %}
 						<form method="POST" action="{{ url_for('update_trans_exp', trans_id=t.id) }}">
 							<select name="expense_id">
 								{% for expense in expensetypes %}
