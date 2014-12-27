@@ -119,8 +119,6 @@ def get_monthly_totals(month_num):
 	expensetypes = current_user.expense_types.order_by(ExpenseType.name).all()
 	for e in expensetypes:
 		totals[e.name] = db.session.query(db.func.sum(Transaction.amount).label('sum')).filter(Transaction.expense_type_id == e.id, db.func.extract('month', Transaction.trans_date) == month_num).scalar()
-	sorted(totals.values())
-	sorted(totals, key=totals.get)
 	sorted(totals.items(), key=lambda x:x[1])
 	return totals
 
