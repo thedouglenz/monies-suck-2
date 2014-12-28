@@ -161,7 +161,7 @@ def monthly_totals():
 @login_required
 def bar_chart_monthly_totals():
 	data = {
-		'labels' : current_user.expense_types.with_entities(ExpenseType.name).order_by(ExpenseType.name).all(),
+		'labels' : [],
 		'datasets' : [{
 			'label' : 'Monthly Totals',
 			'fillColor' : random_color(),
@@ -172,7 +172,9 @@ def bar_chart_monthly_totals():
 	tm = get_monthly_totals(datetime.datetime.now().month)
 
 	for t in tm:
-		data['datasets'][0]['data'].append(t[1])
+		val = t[1] if t[1] else 0
+		data['labels'].append(t[0])
+		data['datasets'][0]['data'].append(val)
 
 	return json.dumps(data, default=decimal_default)
 
