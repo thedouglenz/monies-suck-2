@@ -13,6 +13,7 @@ monies-suck-2
 8. When the solution is complete, merge master into your branch one more time and push your branch to the remote repo, **git push -u origin bar-chart** (you can push your branch up to remote anytime as well)
 9. Find the new branch on GitHub and submit a pull request so it can be reviewed and receive feedback.
 10. The branch may then be merged into master via GitHub or progress may continue on it by making more commits to the same branch.
+11. When a bug or feature branch is merged into master, I will push master up to Heroku within a week or less.
 
 ### Notes
 Some files don't need to be pushed to GitHub.
