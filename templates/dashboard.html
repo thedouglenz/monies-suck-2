@@ -24,6 +24,9 @@
 	</div>
 	<div class="pure-u-1-2">
 		<p class="section-header">Monthly spending at a glance</p>
+		<span><i class="fa fa-pie-chart"></i> Charts </span>
+		<button id="radial-chart-btn" class="pure-button button-primary">Radial</button>
+		<button id="bar-chart-btn" class="pure-button button-primary">Bar</button>
 		<canvas id="dash-chart" width="400" height="400"></canvas>
 	</div>
 	<div class="pure-u-1">
@@ -90,10 +93,20 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		// Handle dash chart
-		$.getJSON("../api/v1/totals/month", function(data){
-			var ctx = document.getElementById("dash-chart").getContext("2d");
-			var dashChart = new Chart(ctx).PolarArea(data);
-		});
+
+		var ctx = document.getElementById("dash-chart").getContext("2d");
+
+		function displayRadialChart() {
+			$.getJSON("../api/v1/totals/month", function(data){
+				var dashChart = new Chart(ctx).PolarArea(data);
+			});
+		} displayRadialChart();
+
+		function displayBarChart() {
+
+		}
+
+		$("#radial-chart-btn").click(displayRadialChart);
 	});
 </script>
 {% endblock %}
