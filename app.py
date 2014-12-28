@@ -143,7 +143,7 @@ def dashboard(page=1):
 
 	return render_template('dashboard.html', expensetypes=expensetypes, transactions=transactions, totals=totals, month_name=month_name)
 
-@app.route('/api/v1/totals/month')
+@app.route('/api/v1/charts/radial/totals/month')
 @login_required
 def monthly_totals():
 	data = []
@@ -157,6 +157,24 @@ def monthly_totals():
 			})
 	return json.dumps(data, default=decimal_default)
 
+@app.route('/api/v1/charts/bar/totals/month')
+@login_required
+def bar_chart_monthly_totals():
+	data = {
+		'labels' : current_user.expense_types.with_entities(ExpenseType.name).order_by(ExpenseType.name).all(),
+		'datasets' : [{
+			'label' : 'Monthly Totals',
+			'fillColor' : random_color(),
+			'strokeColor' : "rgba(20, 20, 20, 0.9)",
+			'data' : []
+		}]
+	}
+	tm = get_monthly_totals(datetime.datetime.now().month)
+
+	for t in tm:
+		data['datasets'][0]['data'].append(t[1])
+
+	return json.dumps(data, default=decimal_default)
 
 @app.route('/expensetypes/create')
 @login_required
