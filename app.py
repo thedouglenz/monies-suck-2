@@ -8,7 +8,7 @@ from marshmallow import Serializer
 
 import random, json, decimal
 
-from config import TRANSACTIONS_PER_PAGE
+from config import TRANSACTIONS_PER_PAGE, COOL_PURPLE
 
 app = Flask(__name__)
 
@@ -164,7 +164,7 @@ def bar_chart_monthly_totals():
 		'labels' : [],
 		'datasets' : [{
 			'label' : 'Monthly Totals',
-			'fillColor' : random_color(),
+			'fillColor' : COOL_PURPLE,
 			'strokeColor' : "rgba(20, 20, 20, 0.9)",
 			'data' : []
 		}]
