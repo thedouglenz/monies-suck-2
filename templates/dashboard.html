@@ -49,7 +49,9 @@
 							</select>
 							<button type="submit">Ok</button>
 						</form>
-					{% endif %}</td><td>$ {{ t.amount }}</td><td><a class="trash-button" href="{{ url_for('delete_transaction', trans_id=t.id) }}"><i class="fa fa-trash"></i></a></td>
+					{% endif %}</td>{% if t.sign == "POSITIVE" %}
+					<td>${{ t.amount }}</td> {% else %} <td><span style="color:red;">-${{ t.amount }}</span></td>{% endif %}
+					<td><a class="trash-button" href="{{ url_for('delete_transaction', trans_id=t.id) }}"><i class="fa fa-trash"></i></a></td>
 				</tr>
 				{% else %}
 				<tr>

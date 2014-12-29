@@ -70,6 +70,23 @@ class ExpenseType(db.Model):
 		class Meta:
 			fields =("id", "name", "user_id")
 
+class IncomeType(db.Model):
+	__tablename__ = 'income_types'
+
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String, unique=True, nullable=False)
+	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+	user = db.relationship('User',  backref=db.backref('income_types',lazy='dynamic'))
+
+	def __init__(self, name, user_id):
+		self.name = name
+		self.user_id = user_id
+
+	class Serializer(Serializer):
+		class Meta:
+			fields =("id", "name", "user_id")
+
 class Transaction(db.Model):
 	__tablename__ = 'transactions'
 
@@ -78,21 +95,25 @@ class Transaction(db.Model):
 	desc = db.Column(db.String, nullable=False)
 	amount = db.Column(db.Numeric, nullable=False)
 	expense_type_id = db.Column(db.Integer, db.ForeignKey('expense_types.id'))
-	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+	income_type_id = db.Column(db.Integer, db.ForeignKey('income_types.id'))
+	user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+	sign = db.Column(db.Enum("POSITIVE", "NEGATIVE", name='sign'), nullable=False)
 
 	user = db.relationship('User',  backref=db.backref('transactions', lazy='dynamic'))
 	expense = db.relationship('ExpenseType', backref=db.backref('expense_types', lazy='dynamic'))
 
-	def __init__(self, date, desc, e_type_id, amount, user_id):
+	def __init__(self, date, desc, e_type_id, i_type_id, amount, sign, user_id):
 		self.trans_date = date
 		self.desc = desc
 		self.expense_type_id = e_type_id
+		self.i_type_id = i_type_id
 		self.amount = amount
+		self.sign = sign
 		self.user_id = user_id
 
 	class Serializer(Serializer):
 		class Meta:
-			fields = ("id", "trans_date", "desc", "expense_type_id", "amount", "user_id")
+			fields = ("id", "trans_date", "desc", "expense_type_id", "amount", "sign", "user_id")
 
 # ROUTES
 
@@ -118,7 +139,7 @@ def get_monthly_totals(month_num):
 	totals = {}
 	expensetypes = current_user.expense_types.order_by(ExpenseType.name).all()
 	for e in expensetypes:
-		totals[e.name] = db.session.query(db.func.sum(Transaction.amount).label('sum')).filter(Transaction.expense_type_id == e.id, db.func.extract('month', Transaction.trans_date) == month_num).scalar()
+		totals[e.name] = db.session.query(db.func.sum(Transaction.amount).label('sum')).filter(Transaction.expense_type_id == e.id, db.func.extract('month', Transaction.trans_date) == month_num, Transaction.sign == "NEGATIVE").scalar()
 	totals = sorted(totals.items(), key=lambda x:x[1], reverse=True)
 	return totals
 
@@ -196,6 +217,7 @@ def add_transaction_post():
 	e_type_id = request.form['expensetype']
 	new_e_type = request.form['newexpensetype']
 	amount = request.form['amount']
+	sign = request.form['sign']
 	user_id = current_user.id
 
 	if e_type_id == "none" and new_e_type != "":
@@ -204,7 +226,7 @@ def add_transaction_post():
 		db.session.commit()
 		e_type_id = new_et.id
 
-	new_transaction = Transaction(t_date, desc, e_type_id, amount, user_id);
+	new_transaction = Transaction(t_date, desc, e_type_id, amount, sign, user_id);
 	db.session.add(new_transaction)
 	db.session.commit()
 	return redirect(url_for('dashboard'))
