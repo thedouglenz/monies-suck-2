@@ -101,12 +101,13 @@ class Transaction(db.Model):
 
 	user = db.relationship('User',  backref=db.backref('transactions', lazy='dynamic'))
 	expense = db.relationship('ExpenseType', backref=db.backref('expense_types', lazy='dynamic'))
+	income = db.relationship('IncomeType', backref=db.backref('income_types', lazy='dynamic'))
 
 	def __init__(self, date, desc, e_type_id, i_type_id, amount, sign, user_id):
 		self.trans_date = date
 		self.desc = desc
 		self.expense_type_id = e_type_id
-		self.i_type_id = i_type_id
+		self.income_type_id = i_type_id
 		self.amount = amount
 		self.sign = sign
 		self.user_id = user_id
