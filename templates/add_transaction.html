@@ -11,12 +11,13 @@
 					<input type="date" name="trans_date">
 					<input type="text" name="desc" class="pure-input-1" placeholder="Description">
 					<select type="select" name="expensetype" class="pure-input-1">
-						<option value="0">Select...</option>
+						<option value="none">Select category...</option>
 						{% for e in expensetypes %}
 							<option value="{{ e.id }}"> {{ e.name }} </option>
 						{% endfor %}
 					</select>
-					$<input type="number" step="0.01" name="amount" class="pure-input-1" placeholder="0.00">
+					<input type="text" name="newexpensetype" class="pure-input-1" placeholder="Or add a new category">
+					<label for="amount">$</label><input type="number" step="0.01" name="amount" class="pure-input-1" placeholder="0.00">
 					<button type="submit" class="pure-button button-primary pure-input-1"> Add </button>
 				</fieldset>
 			</form>

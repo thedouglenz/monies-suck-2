@@ -194,7 +194,7 @@ def create_expense_type_post():
 @app.route('/expensetypes/<int:expense_type_id>/delete')
 @login_required
 def delete_expense_type(expense_type_id):
-	e = ExpenseType.query.get(expense_type_id)
+	e = ExpenseType.get(expense_type_id)
 	if not e.user_id == current_user.id:
 		abort(401)
 	if e:
@@ -214,8 +214,15 @@ def add_transaction_post():
 	t_date = request.form['trans_date']
 	desc = request.form['desc']
 	e_type_id = request.form['expensetype']
+	new_e_type = request.form['newexpensetype']
 	amount = request.form['amount']
 	user_id = current_user.id
+
+	if e_type_id == "none" and new_e_type != "":
+		new_et = ExpenseType(new_e_type, current_user.id)
+		db.session.add(new_et)
+		db.session.commit()
+		e_type_id = new_et.id
 
 	new_transaction = Transaction(t_date, desc, e_type_id, amount, user_id);
 	db.session.add(new_transaction)
