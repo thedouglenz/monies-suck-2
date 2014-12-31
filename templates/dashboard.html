@@ -112,12 +112,12 @@
 	function delete_transaction(current_id){
 		if(document.old_data === undefined)
 			document.old_data = {};
-		document.old_data ["row_"+current_id] = $('.trash_'+current_id).closest('tr').html();
-		$('.trash_'+current_id).closest('tr').html('<td></td><td id="delete_'+current_id+'">Are you sure?</td><td><a href="/transactions/'+current_id+'/delete"><button formaction="/transactions/'+current_id+'/delete" data-transaction-id="'+current_id+'">Yes</button></a></td><td><button data-transaction-id="'+current_id+'" onclick="negate_deletion('+current_id+')">No</button></td><td></td>')
+		document.old_data ["row_"+current_id] = $('.trash_'+current_id).parent().html();
+		$('.trash_'+current_id).parent().html('<a href="/transactions/'+current_id+'/delete" id="delete_'+current_id+'"><button formaction="/transactions/'+current_id+'/delete" data-transaction-id="'+current_id+'" class="pure-button button-primary">Confirm</button></a><button data-transaction-id="'+current_id+'" onclick="negate_deletion('+current_id+')" class="pure-button button-primary">Cancel</button>')
 	};
 
 	function negate_deletion(current_id){
-		$current_cell = $('#delete_'+current_id).closest('tr').html(document.old_data["row_"+current_id]);
+		$('#delete_'+current_id).parent().html(document.old_data["row_"+current_id]);
 	}
 </script>
 {% endblock %}
