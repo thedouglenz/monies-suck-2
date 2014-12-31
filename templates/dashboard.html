@@ -1,33 +1,12 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="pure-g">
-	<div class="pure-u-1-2">
-		<p class="section-header">Monthly Totals for <span class="app-color">{{ month_name }}</span></p>
-		<table class="pure-table">
-			<thead>
-				<tr>
-					<th>Category</th><th>Total</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for c in totals %}
-					<tr>
-						<td>{{ c[0] }}</td><td>{% if c[1] %} $ {{ c[1] }} {% else %} $ 0.00 {% endif %}</td>
-					</tr>
-				{% else %}
-					<tr>
-						<td colspan="2"> No data to show here until you add spending categories!</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
-	<div class="pure-u-1-2">
+	<div id="charts-container" class="pure-u-1-2">
 		<p class="section-header">Monthly spending at a glance</p>
 		<span><i class="fa fa-pie-chart"></i> Charts </span>
 		<button id="radial-chart-btn" class="pure-button button-primary">Radial</button>
 		<button id="bar-chart-btn" class="pure-button button-primary">Bar</button>
-		<canvas id="dash-chart" width="400" height="400"></canvas>
+		<canvas id="dash-chart" width="600" height="400"></canvas>
 	</div>
 	<div class="pure-u-1">
 		<p class="section-header">Transactions</p>
@@ -92,21 +71,31 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		// Handle dash chart
-
+		// Handle dash charts
 		var ctx = document.getElementById("dash-chart").getContext("2d");
 
-		function displayRadialChart() {
-			$.getJSON("../api/v1/totals/month", function(data){
-				var dashChart = new Chart(ctx).PolarArea(data);
-			});
-		} displayRadialChart();
-
-		function displayBarChart() {
-
+		var resetCanvas = function()  {
+			$("#dash-chart").remove();
+			$("#charts-container").append('<canvas id="dash-chart" width="600" height="400"><canvas>"');
+			ctx = document.getElementById("dash-chart").getContext("2d");
 		}
 
+		function displayRadialChart() {
+			resetCanvas();
+			$.getJSON("../api/v1/charts/radial/totals/month", function(data){
+				var dashChart = new Chart(ctx).PolarArea(data);
+			});
+		}
+
+		function displayBarChart() {
+			resetCanvas();
+			$.getJSON("../api/v1/charts/bar/totals/month", function(data){
+				var dashChart = new Chart(ctx).Bar(data);
+			});
+		} displayBarChart();
+
 		$("#radial-chart-btn").click(displayRadialChart);
+		$("#bar-chart-btn").click(displayBarChart);
 	});
 
 	function delete_transaction(current_id){

@@ -8,7 +8,7 @@ from marshmallow import Serializer
 
 import random, json, decimal
 
-from config import TRANSACTIONS_PER_PAGE
+from config import TRANSACTIONS_PER_PAGE, COOL_PURPLE
 
 app = Flask(__name__)
 
@@ -143,7 +143,7 @@ def dashboard(page=1):
 
 	return render_template('dashboard.html', expensetypes=expensetypes, transactions=transactions, totals=totals, month_name=month_name)
 
-@app.route('/api/v1/totals/month')
+@app.route('/api/v1/charts/radial/totals/month')
 @login_required
 def monthly_totals():
 	data = []
@@ -157,6 +157,26 @@ def monthly_totals():
 			})
 	return json.dumps(data, default=decimal_default)
 
+@app.route('/api/v1/charts/bar/totals/month')
+@login_required
+def bar_chart_monthly_totals():
+	data = {
+		'labels' : [],
+		'datasets' : [{
+			'label' : 'Monthly Totals',
+			'fillColor' : COOL_PURPLE,
+			'strokeColor' : "rgba(20, 20, 20, 0.9)",
+			'data' : []
+		}]
+	}
+	tm = get_monthly_totals(datetime.datetime.now().month)
+
+	for t in tm:
+		val = t[1] if t[1] else 0
+		data['labels'].append(t[0])
+		data['datasets'][0]['data'].append(val)
+
+	return json.dumps(data, default=decimal_default)
 
 @app.route('/expensetypes/create')
 @login_required
