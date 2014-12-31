@@ -39,7 +39,7 @@
 			</thead>
 			<tbody>
 				{% for t in transactions.items %}
-				<tr>
+				<tr data-row-num="{{t.id}}">
 					<td>{{ t.trans_date }}</td><td>{{ t.desc }}</td><td>  {% if t.expense %}{{ t.expense.name }} {% else %}
 						<form method="POST" action="{{ url_for('update_trans_exp', trans_id=t.id) }}">
 							<select name="expense_id">
@@ -49,7 +49,7 @@
 							</select>
 							<button type="submit">Ok</button>
 						</form>
-					{% endif %}</td><td>$ {{ t.amount }}</td><td><a class="trash-button" href="{{ url_for('delete_transaction', trans_id=t.id) }}"><i class="fa fa-trash"></i></a></td>
+					{% endif %}</td><td>$ {{ t.amount }}</td><td><a class="trash-button trash_{{t.id}}" onclick="delete_transaction({{t.id}})"><i class="fa fa-trash"></i></a></td>
 				</tr>
 				{% else %}
 				<tr>
@@ -108,5 +108,16 @@
 
 		$("#radial-chart-btn").click(displayRadialChart);
 	});
+
+	function delete_transaction(current_id){
+		if(document.old_data === undefined)
+			document.old_data = {};
+		document.old_data ["row_"+current_id] = $('.trash_'+current_id).closest('tr').html();
+		$('.trash_'+current_id).closest('tr').html('<td></td><td id="delete_'+current_id+'">Are you sure?</td><td><a href="/transactions/'+current_id+'/delete"><button formaction="/transactions/'+current_id+'/delete" data-transaction-id="'+current_id+'">Yes</button></a></td><td><button data-transaction-id="'+current_id+'" onclick="negate_deletion('+current_id+')">No</button></td><td></td>')
+	};
+
+	function negate_deletion(current_id){
+		$current_cell = $('#delete_'+current_id).closest('tr').html(document.old_data["row_"+current_id]);
+	}
 </script>
 {% endblock %}
