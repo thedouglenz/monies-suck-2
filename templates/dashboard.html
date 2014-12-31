@@ -40,14 +40,20 @@
 			<tbody>
 				{% for t in transactions.items %}
 				<tr>
-					<td>{{ t.trans_date }}</td><td>{{ t.desc }}</td><td>  {% if t.expense %}{{ t.expense.name }} {% else %}
-						<form method="POST" action="{{ url_for('update_trans_exp', trans_id=t.id) }}">
+					<td>{{ t.trans_date }}</td><td>{{ t.desc }}</td><td>
+					{% if t.expense %}{{ t.expense.name }}
+					{% elif t.income %}{{ t.income.name }}
+					{% elif not (t.expense or t.income) %}
+						<form method="POST" action="{{ url_for('update_category', trans_id=t.id) }}">
 							<select name="expense_id">
 								{% for expense in expensetypes %}
-									<option value="{{ expense.id }}" > {{ expense.name }} </option>
+									<option value="{{ expense.name }}" > {{ expense.name }} </option>
+								{% endfor %}
+								{% for income in incometypes %}
+									<option value="{{ income.name }}" > {{ income.name }} </option>
 								{% endfor %}
 							</select>
-							<button type="submit">Ok</button>
+							<button type="submit" class="pure-button button_primary">Ok</button>
 						</form>
 					{% endif %}</td>{% if t.sign == "POSITIVE" %}
 					<td>${{ t.amount }}</td> {% else %} <td><span style="color:red;">-${{ t.amount }}</span></td>{% endif %}
@@ -82,13 +88,26 @@
 		<div id="list-container">
 			<ul>
 				{% for expense in expensetypes %}
-					<li><span style="color:black;">{{ expense.name }}</span><a class="trash-button" href="{{ url_for('delete_expense_type', expense_type_id=expense.id) }}"><i class="fa fa-trash"></i></a></li>
+				<li><span style="color:black;">{{ expense.name }}</span><a class="trash-button" href="{{ url_for('delete_expense_type', expense_type_id=expense.id) }}"><i class="fa fa-trash"></i></a></li>
 				{% else %}
-					You don't spend money on anything! Congrats!
+				You don't spend money on anything! Congrats!
 				{% endfor %}
 			</ul>
 		</div>
 		<a href="{{ url_for('create_expense_type') }}" class="pure-button">add</a>
+	</div>
+	<div class="pure-u-1">
+		<p class="section-header">Ways you earn</p>
+		<div id="list-container">
+			<ul>
+				{% for income in incometypes %}
+				<li><span style="color:black;">{{ income.name }}</span><a class="trash-button" href="{{ url_for('delete_income_type', income_type_id=income.id) }}"><i class="fa fa-trash"></i></a></li>
+				{% else %}
+				You have no sources of income yet. Add one now!
+				{% endfor %}
+			</ul>
+		</div>
+		<a href="{{ url_for('create_income_type') }}" class="pure-button">add</a>
 	</div>
 </div>
 

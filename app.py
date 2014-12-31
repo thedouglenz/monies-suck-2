@@ -114,7 +114,7 @@ class Transaction(db.Model):
 
 	class Serializer(Serializer):
 		class Meta:
-			fields = ("id", "trans_date", "desc", "expense_type_id", "amount", "sign", "user_id")
+			fields = ("id", "trans_date", "desc", "expense_type_id", "income_type_id" "amount", "sign", "user_id")
 
 # ROUTES
 
@@ -156,6 +156,7 @@ def decimal_default(obj):
 def dashboard(page=1):
 	transactions = current_user.transactions.order_by(Transaction.trans_date.desc()).paginate(page, TRANSACTIONS_PER_PAGE, False)
 	expensetypes = current_user.expense_types.order_by(ExpenseType.name).all()
+	incometypes = current_user.income_types.order_by(IncomeType.name).all()
 
 	# this month stuff
 	this_month = datetime.datetime.now().month
@@ -163,7 +164,7 @@ def dashboard(page=1):
 
 	totals = get_monthly_totals(this_month)
 
-	return render_template('dashboard.html', expensetypes=expensetypes, transactions=transactions, totals=totals, month_name=month_name)
+	return render_template('dashboard.html', expensetypes=expensetypes, incometypes=incometypes, transactions=transactions, totals=totals, month_name=month_name)
 
 @app.route('/api/v1/totals/month')
 @login_required
@@ -193,10 +194,23 @@ def create_expense_type_post():
 	db.session.commit()
 	return redirect(url_for('dashboard'))
 
+@app.route('/incometypes/create')
+@login_required
+def create_income_type():
+	return render_template('create_income_type.html')
+
+@app.route('/incometypes/create', methods=['POST'])
+@login_required
+def create_income_type_post():
+	new_it = IncomeType(request.form['name'], current_user.id)
+	db.session.add(new_it)
+	db.session.commit()
+	return redirect(url_for('dashboard'))
+
 @app.route('/expensetypes/<int:expense_type_id>/delete')
 @login_required
 def delete_expense_type(expense_type_id):
-	e = ExpenseType.get(expense_type_id)
+	e = ExpenseType.query.get(expense_type_id)
 	if not e.user_id == current_user.id:
 		abort(401)
 	if e:
@@ -204,30 +218,49 @@ def delete_expense_type(expense_type_id):
 		db.session.commit()
 	return redirect(url_for('dashboard'))
 
+@app.route('/incometypes/<int:income_type_id>/delete')
+@login_required
+def delete_income_type(income_type_id):
+	i = IncomeType.query.get(income_type_id)
+	if not i.user_id == current_user.id:
+		abort(401)
+	if i:
+		db.session.delete(i)
+		db.session.commit()
+	return redirect(url_for('dashboard'))
+
 @app.route('/transactions/add')
 @login_required
 def add_transaction():
 	expensetypes = current_user.expense_types.order_by(ExpenseType.name).all()
-	return render_template('add_transaction.html', expensetypes=expensetypes)
+	incometypes = current_user.income_types.order_by(IncomeType.name).all()
+	return render_template('add_transaction.html', expensetypes=expensetypes, incometypes=incometypes)
 
 @app.route('/transactions/add', methods=["POST"])
 @login_required
 def add_transaction_post():
 	t_date = request.form['trans_date']
 	desc = request.form['desc']
-	e_type_id = request.form['expensetype']
-	new_e_type = request.form['newexpensetype']
+	type_id = request.form['category']
+	new_type = request.form['newcategory']
 	amount = request.form['amount']
 	sign = request.form['sign']
 	user_id = current_user.id
 
-	if e_type_id == "none" and new_e_type != "":
-		new_et = ExpenseType(new_e_type, current_user.id)
-		db.session.add(new_et)
-		db.session.commit()
-		e_type_id = new_et.id
-
-	new_transaction = Transaction(t_date, desc, e_type_id, amount, sign, user_id);
+	if sign == "NEGATIVE":
+		if type_id == "none" and new_type != "":
+			new_t = ExpenseType(new_e_type, current_user.id)
+			db.session.add(new_t)
+			db.session.commit()
+			type_id = new_t.id
+		new_transaction = Transaction(t_date, desc, type_id, None, amount, sign, user_id);
+	else:
+		if type_id == "none" and new_type != "":
+			new_t = IncomeType(new_e_type, current_user.id)
+			db.session.add(new_t)
+			db.session.commit()
+			type_id = new_t.id
+		new_transaction = Transaction(t_date, desc, None, type_id, amount, sign, user_id);
 	db.session.add(new_transaction)
 	db.session.commit()
 	return redirect(url_for('dashboard'))
@@ -243,13 +276,20 @@ def delete_transaction(trans_id):
 		db.session.commit()
 	return redirect(url_for('dashboard'))
 
-@app.route('/transactions/<int:trans_id>/update_exp', methods=['POST'])
-def update_trans_exp(trans_id):
+@app.route('/transactions/<int:trans_id>/update_category', methods=['POST'])
+def update_category(trans_id):
 	t = Transaction.query.get(trans_id)
 	if not t.user_id == current_user.id:
 		abort(401)
 	if t:
-		t.expense_type_id = request.form['expense_id']
+		ets = ExpenseType.query.filter(ExpenseType.name == request.form['cat_name']).first()
+		its = IncomeType.query.filter(IncomeType.name == request.form['cat_name']).first()
+		if ets:
+			t.expense_type_id = request.form['type_name']
+		elif its:
+			t.income_type_id = request.form['type_name']
+		else:
+			abort(500)
 		db.session.commit()
 	return redirect(url_for('dashboard'))
 
