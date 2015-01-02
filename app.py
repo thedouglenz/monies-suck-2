@@ -7,8 +7,9 @@ from flask.ext.bcrypt import Bcrypt
 from marshmallow import Serializer
 
 import random, json, decimal
+from time_functions import month_add
 
-from config import TRANSACTIONS_PER_PAGE, COOL_PURPLE
+from config import TRANSACTIONS_PER_PAGE, COOL_PURPLE, COOL_PURPLE_MD, COOL_PURPLE_LT
 
 app = Flask(__name__)
 
@@ -160,21 +161,40 @@ def monthly_totals():
 @app.route('/api/v1/charts/bar/totals/month')
 @login_required
 def bar_chart_monthly_totals():
+	# The last 3 months of spending information
 	data = {
 		'labels' : [],
 		'datasets' : [{
+			'label' : 'Monthly Totals',
+			'fillColor' : COOL_PURPLE_LT,
+			'strokeColor' : "rgba(20, 20, 20, 0.9)",
+			'data' : []
+		}, {
+			'label' : 'Monthly Totals',
+			'fillColor' : COOL_PURPLE_MD,
+			'strokeColor' : "rgba(20, 20, 20, 0.9)",
+			'data' : []
+		} , {
 			'label' : 'Monthly Totals',
 			'fillColor' : COOL_PURPLE,
 			'strokeColor' : "rgba(20, 20, 20, 0.9)",
 			'data' : []
 		}]
 	}
-	tm = get_monthly_totals(datetime.datetime.now().month)
+	this_month = datetime.datetime.now().month
+	prev_month = month_add(this_month, -1)
+	prev_prev_month = month_add(prev_month, -1)
 
-	for t in tm:
-		val = t[1] if t[1] else 0
-		data['labels'].append(t[0])
-		data['datasets'][0]['data'].append(val)
+	tm = []
+	tm.append(get_monthly_totals(this_month))
+	tm.append(get_monthly_totals(prev_month))
+	tm.append(get_monthly_totals(prev_prev_month))
+
+	for n in range(len(tm)):
+		for t in tm[n]:
+			val = t[1] if t[1] else 0
+			data['labels'].append(t[0])
+			data['datasets'][n]['data'].append(val)
 
 	return json.dumps(data, default=decimal_default)
 
