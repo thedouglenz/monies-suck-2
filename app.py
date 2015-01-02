@@ -120,7 +120,7 @@ def get_monthly_totals(month_num):
 	expensetypes = current_user.expense_types.order_by(ExpenseType.name).all()
 	for e in expensetypes:
 		totals[e.name] = db.session.query(db.func.sum(Transaction.amount).label('sum')).filter(Transaction.expense_type_id == e.id, db.func.extract('month', Transaction.trans_date) == month_num).scalar()
-	totals = sorted(totals.items(), key=lambda x:x[1], reverse=True)
+	#totals = sorted(totals.items(), key=lambda x:x[1], reverse=True)
 	return totals
 
 def decimal_default(obj):
@@ -190,11 +190,15 @@ def bar_chart_monthly_totals():
 	tm.append(get_monthly_totals(prev_month))
 	tm.append(get_monthly_totals(prev_prev_month))
 
-	for n in range(len(tm)):
-		for t in tm[n]:
-			val = t[1] if t[1] else 0
-			data['labels'].append(t[0])
-			data['datasets'][n]['data'].append(val)
+	for i in tm[0]:
+		data['labels'].append(i)
+	c = 0
+	for n in tm:
+		for i in n:
+			val = n[i] if n[i] else 0
+			#data['labels'].append(t[0])
+			data['datasets'][c]['data'].append(val)
+		c = c + 1
 
 	return json.dumps(data, default=decimal_default)
 
