@@ -1,15 +1,18 @@
 def month_add(month, offset):
-    """ Take a month and an offset and add them together with approriate wraparound behavior
-        for both postiive and negative offset values. Offset should be between -12 and 12
-        inclusive, however.
+    """ month_add takes two paramaters: month = (1 <= month <= 12); offset(-infinity <= offset <= infinity)
+        return value: 1 <= result <= 12
+
+        Take a month and an offset and add them together with appropriate wraparound behavior
+        for both positive and negative offset values.
     """
-    result = month
-    if offset == 0:
-        return result
-    elif month + offset < 1:
-        result = 12 + (month + offset)
-    elif month + offset > 12:
-        result = offset - (12 - month)
-    else:
-        result = month + offset
+    if(month < 1 OR month > 12)
+        return month;#return bad value and hopefully have it be noticed.
+    current_month = month + offset;
+    normalized_month = current_month % 12
+
+    #ensure that the result is valid before returning value
+    if normalized_month < 1 OR normalized_month > 12:
+        result = -1
+    else
+        result = normalized_month
     return result
