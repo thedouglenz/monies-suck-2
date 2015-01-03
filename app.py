@@ -151,10 +151,10 @@ def monthly_totals():
 	tm = get_monthly_totals(datetime.datetime.now().month) # tm is a list of sorted tuples
 	for t in tm:
 		data.append({
-			'value':		t[1],
+			'value':		tm[t],
 			'color':		random_color(),
 			'highlight':	random_color(),
-			'label' :	t[0]
+			'label' :	t
 			})
 	return json.dumps(data, default=decimal_default)
 
@@ -164,31 +164,31 @@ def bar_chart_monthly_totals():
 	# The last 3 months of spending information
 	data = {
 		'labels' : [],
-		'datasets' : [{
-			'label' : 'Monthly Totals',
-			'fillColor' : COOL_PURPLE_LT,
+		'datasets' : [{ 'fillColor' : COOL_PURPLE,
 			'strokeColor' : "rgba(20, 20, 20, 0.9)",
 			'data' : []
-		}, {
-			'label' : 'Monthly Totals',
-			'fillColor' : COOL_PURPLE_MD,
+		}, { 'fillColor' : COOL_PURPLE_MD,
 			'strokeColor' : "rgba(20, 20, 20, 0.9)",
 			'data' : []
-		} , {
-			'label' : 'Monthly Totals',
-			'fillColor' : COOL_PURPLE,
+		} , { 'fillColor' : COOL_PURPLE_LT,
 			'strokeColor' : "rgba(20, 20, 20, 0.9)",
 			'data' : []
 		}]
 	}
-	this_month = datetime.datetime.now().month
-	prev_month = month_add(this_month, -1)
-	prev_prev_month = month_add(prev_month, -1)
+
+	months = []
+	months.append(datetime.datetime.now().month)
+	months.append(month_add(months[0], -1))
+	months.append(month_add(months[1], -1))
+
+	month_names = []
+	for m in months:
+		month_names.append(calendar.month_name[m])
 
 	tm = []
-	tm.append(get_monthly_totals(this_month))
-	tm.append(get_monthly_totals(prev_month))
-	tm.append(get_monthly_totals(prev_prev_month))
+	tm.append(get_monthly_totals(months[0]))
+	tm.append(get_monthly_totals(months[1]))
+	tm.append(get_monthly_totals(months[2]))
 
 	for i in tm[0]:
 		data['labels'].append(i)
@@ -198,6 +198,7 @@ def bar_chart_monthly_totals():
 			val = n[i] if n[i] else 0
 			#data['labels'].append(t[0])
 			data['datasets'][c]['data'].append(val)
+			data['datasets'][c]['label'] = month_names[c]
 		c = c + 1
 
 	return json.dumps(data, default=decimal_default)
