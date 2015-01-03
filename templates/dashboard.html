@@ -21,7 +21,7 @@
 			<tbody>
 				{% for t in transactions.items %}
 				<tr data-row-num="{{t.id}}">
-					<td>{{ t.trans_date }}</td><td>{{ t.desc }}</td><td>  {% if t.expense %}{{ t.expense.name }} {% else %}
+					<td>{{ t.trans_date.strftime('%m-%d-%Y') }}</td><td>{{ t.desc }}</td><td>  {% if t.expense %}{{ t.expense.name }} {% else %}
 						<form method="POST" action="{{ url_for('update_trans_exp', trans_id=t.id) }}">
 							<select name="expense_id">
 								{% for expense in expensetypes %}
