@@ -7,8 +7,9 @@ from flask.ext.bcrypt import Bcrypt
 from marshmallow import Serializer
 
 import random, json, decimal
+from time_functions import month_add
 
-from config import TRANSACTIONS_PER_PAGE, COOL_PURPLE
+from config import TRANSACTIONS_PER_PAGE, COOL_PURPLE, COOL_PURPLE_MD, COOL_PURPLE_LT
 
 app = Flask(__name__)
 
@@ -119,7 +120,7 @@ def get_monthly_totals(month_num):
 	expensetypes = current_user.expense_types.order_by(ExpenseType.name).all()
 	for e in expensetypes:
 		totals[e.name] = db.session.query(db.func.sum(Transaction.amount).label('sum')).filter(Transaction.expense_type_id == e.id, db.func.extract('month', Transaction.trans_date) == month_num).scalar()
-	totals = sorted(totals.items(), key=lambda x:x[1], reverse=True)
+	#totals = sorted(totals.items(), key=lambda x:x[1], reverse=True)
 	return totals
 
 def decimal_default(obj):
@@ -150,31 +151,55 @@ def monthly_totals():
 	tm = get_monthly_totals(datetime.datetime.now().month) # tm is a list of sorted tuples
 	for t in tm:
 		data.append({
-			'value':		t[1],
+			'value':		tm[t],
 			'color':		random_color(),
 			'highlight':	random_color(),
-			'label' :	t[0]
+			'label' :	t
 			})
 	return json.dumps(data, default=decimal_default)
 
 @app.route('/api/v1/charts/bar/totals/month')
 @login_required
 def bar_chart_monthly_totals():
+	# The last 3 months of spending information
 	data = {
 		'labels' : [],
-		'datasets' : [{
-			'label' : 'Monthly Totals',
-			'fillColor' : COOL_PURPLE,
+		'datasets' : [{ 'fillColor' : COOL_PURPLE,
+			'strokeColor' : "rgba(20, 20, 20, 0.9)",
+			'data' : []
+		}, { 'fillColor' : COOL_PURPLE_MD,
+			'strokeColor' : "rgba(20, 20, 20, 0.9)",
+			'data' : []
+		} , { 'fillColor' : COOL_PURPLE_LT,
 			'strokeColor' : "rgba(20, 20, 20, 0.9)",
 			'data' : []
 		}]
 	}
-	tm = get_monthly_totals(datetime.datetime.now().month)
 
-	for t in tm:
-		val = t[1] if t[1] else 0
-		data['labels'].append(t[0])
-		data['datasets'][0]['data'].append(val)
+	months = []
+	months.append(datetime.datetime.now().month)
+	months.append(month_add(months[0], -1))
+	months.append(month_add(months[1], -1))
+
+	month_names = []
+	for m in months:
+		month_names.append(calendar.month_name[m])
+
+	tm = []
+	tm.append(get_monthly_totals(months[0]))
+	tm.append(get_monthly_totals(months[1]))
+	tm.append(get_monthly_totals(months[2]))
+
+	for i in tm[0]:
+		data['labels'].append(i)
+	c = 0
+	for n in tm:
+		for i in n:
+			val = n[i] if n[i] else 0
+			#data['labels'].append(t[0])
+			data['datasets'][c]['data'].append(val)
+			data['datasets'][c]['label'] = month_names[c]
+		c = c + 1
 
 	return json.dumps(data, default=decimal_default)
 
