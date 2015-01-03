@@ -1,3 +1,7 @@
+class InvalidMonthException(Exception):
+    def init(self):
+        self.message = "Invalid month. Months are between 1 and 12."
+
 def month_add(month, offset):
     """ month_add takes two parameters: month = (1 <= month <= 12); offset(-infinity <= offset <= infinity)
         return value: 1 <= result <= 12
@@ -6,7 +10,7 @@ def month_add(month, offset):
         for both positive and negative offset values.
     """
     if month < 1 or month > 12:
-        return month;#return bad value and hopefully have it be noticed.
+        raise InvalidMonthException()
     if offset < 0:
         new_offset = - (12 - offset % 12)
     else:
