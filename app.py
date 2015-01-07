@@ -212,14 +212,15 @@ def create_expense_type():
 @login_required
 def create_expense_type_post():
 	new_et = ExpenseType(request.form['name'], current_user.id)
-	db.session.add(new_et)
-	db.session.commit()
+	if new_et.name != None and new_et.name != '':
+		db.session.add(new_et)
+		db.session.commit()
 	return redirect(url_for('dashboard'))
 
 @app.route('/expensetypes/<int:expense_type_id>/delete')
 @login_required
 def delete_expense_type(expense_type_id):
-	e = ExpenseType.get(expense_type_id)
+	e = ExpenseType.query.get(expense_type_id)
 	if not e.user_id == current_user.id:
 		abort(401)
 	if e:
