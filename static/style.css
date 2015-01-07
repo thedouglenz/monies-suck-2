@@ -1,6 +1,6 @@
 html {
 	color: #1A1A1A;
-	background-color: white;
+	background-color: #CFCFCF;
 }
 
 body {
@@ -100,7 +100,7 @@ a {
 
 /* fa styles */
 .trash-button {
-	color: #FF4D4D;
+	color: #383CD1;
 	padding-left:7px;
 }
 /* fa styles */
