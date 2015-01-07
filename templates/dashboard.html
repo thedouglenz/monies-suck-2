@@ -30,7 +30,7 @@
 							</select>
 							<button type="submit">Ok</button>
 						</form>
-					{% endif %}</td><td>$ {{ t.amount }}</td><td id="delete_{{ t.id }}"><a class="trash-button trash_{{t.id}}" onclick="delete_transaction({{t.id}})"><i class="fa fa-trash"></i></a></td>
+					{% endif %}</td><td>$ {{ t.amount }}</td><td id="delete_{{ t.id }}"><a class="trash-button trash_{{t.id}}" onclick="deleteTransaction({{t.id}})"><i class="fa fa-trash"></i></a></td>
 				</tr>
 				{% else %}
 				<tr>
@@ -113,15 +113,15 @@
 		$("#bar-chart-btn").click(displayBarChart);
 	});
 
-	function delete_transaction(current_id){
-		if(document.old_data === undefined)
-			document.old_data = {};
-		document.old_data ["row_"+current_id] = $('.trash_'+current_id).closest('tr').html();
-		$('.trash_'+current_id).closest('td').html('<a href="/transactions/'+current_id+'/delete"><button formaction="/transactions/'+current_id+'/delete" data-transaction-id="'+current_id+'" class="pure-button button-primary">Confirm</button></a><button data-transaction-id="'+current_id+'" onclick="negate_deletion('+current_id+')" class="pure-button button-primary">Cancel</button>');
+	function deleteTransaction(currentId){
+		if(document.oldData === undefined)
+			document.oldData = {};
+		document.oldData ["row_"+currentId] = $('.trash_'+currentId).closest('tr').html();
+		$('.trash_'+currentId).closest('td').html('<a href="/transactions/'+currentId+'/delete"><button formaction="/transactions/'+currentId+'/delete" data-transaction-id="'+currentId+'" class="pure-button button-primary">Confirm</button></a><button data-transaction-id="'+currentId+'" onclick="negateDeletion('+currentId+')" class="pure-button button-primary">Cancel</button>');
 	};
 
-	function negate_deletion(current_id){
-		$('#delete_'+current_id).closest('tr').html(document.old_data["row_"+current_id]);
+	function negateDeletion(currentId){
+		$('#delete_'+currentId).closest('tr').html(document.oldData["row_"+currentId]);
 	}
 </script>
 {% endblock %}
