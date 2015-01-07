@@ -1,6 +1,6 @@
 html {
 	color: #1A1A1A;
-	background-color: #D1D1D1;
+	background-color: white;
 }
 
 body {
@@ -8,13 +8,14 @@ body {
 }
 
 a {
-	color: #339933;
+	color: #FFA025;
 	text-decoration: underline;
 }
 
 /* Custom button styles */
 .pure-button {
-	color: #339933;
+	background-color: #2786C9;
+	color: #84CCFF;
 }
 /* Custom button styles */
 
@@ -27,16 +28,17 @@ a {
 /* pure-table styles */
 
 .pure-table {
-	border: 1px solid #339933;
+	border: 1px solid #5DBCFF;
+	min-width: 50%;
 }
 
 .pure-table thead {
 	color: white;
-	background-color: #339933;
+	background-color: #2786C9;
 }
 
 .pure-table tbody {
-	background-color: white;
+	background-color: #B2DFFF;
 }
 
 /* pure-table styles */
@@ -44,7 +46,7 @@ a {
 
 /* Custom random styles */
 #header-content {
-	background-color: #339933;
+	background-color: #2786C9;
 	color: White;
 	padding:10px;
 }
@@ -73,7 +75,10 @@ a {
 }
 
 #list-container ul li {
-	background-color: #ADD6AD;
+	border: 2px solid #FFA025;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
 	display: inline;
 	margin-top: 10px;
 	text-decoration: none;
@@ -95,14 +100,18 @@ a {
 
 /* fa styles */
 .trash-button {
-	color: #333399;
+	color: #FF4D4D;
 	padding-left:7px;
 }
 /* fa styles */
 
 /* app specific */
 .app-color {
-	color:#333399;
+	color:#2786C9;
+}
+
+.app-title-color {
+	color: #FFC67C;
 }
 
 .dash-nav {

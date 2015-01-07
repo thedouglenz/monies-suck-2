@@ -2,7 +2,7 @@
 <html>
 <head>
 	<link href='http://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-	
+
 	<title>monies suck</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
@@ -17,7 +17,7 @@
   <body>
   	<div class="pure-g">
   		<div class="pure-u-1" id="header-content">
-  			<h2 class="app-color dash-nav" style="display:inline;">monies suck </h2>
+  			<h2 class="app-title-color dash-nav" style="display:inline;">monies suck </h2>
         {% if current_user.is_authenticated() %}
           <a href="{{ url_for('dashboard') }}" class="dash-nav" style="color:white;text-decoration:none;"> <i class="fa fa-bar-chart"></i> dashboard</a>
           <a href="{{ url_for('logout') }}" class="dash-nav" style="color:white;text-decoration:none;"> <i class="fa fa-sign-out"></i> logout </a>
@@ -28,6 +28,6 @@
 	  		{% block content %}{% endblock %}
 	  	</div>
   	</div>
-  	
+
   </body>
 </html>
