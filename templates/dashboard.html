@@ -71,57 +71,7 @@
 	</div>
 </div>
 
-<script type="text/javascript">
-	$(document).ready(function() {
-		// Handle dash charts
-		var ctx = document.getElementById("dash-chart").getContext("2d");
-
-		var resetCanvas = function()  {
-			$("#dash-chart").remove();
-			$("#chart-legend").remove();
-			$("#charts-container").append('<canvas id="dash-chart" width="600" height="400"><canvas>"');
-			ctx = document.getElementById("dash-chart").getContext("2d");
-		}
-
-		function displayRadialChart() {
-			resetCanvas();
-			$.getJSON("../api/v1/charts/radial/totals/month", function(data){
-				var dashChart = new Chart(ctx).PolarArea(data);
-			});
-		}
-
-		function displayBarChart() {
-			resetCanvas();
-			var options = {
-				legendTemplate : '<ul id="chart-legend" style="list-style-type:none;">'
-				+'<% for (var i=0; i<datasets.length; i++) { %>'
-				+'<li>'
-				+'<span style="color:<%=datasets[i].fillColor%>;"> <i class="fa fa-square-o" style="padding: 5px; font-weight:bold;"> </i></span>'
-				+'<% if (datasets[i].label) { %><%= datasets[i].label %><% } %>'
-				+'</li>'
-				+'<% } %>'
-				+'</ul>'
-			};
-			$.getJSON("../api/v1/charts/bar/totals/month", function(data){
-				var dashChart = new Chart(ctx).Bar(data, options);
-				var legend = dashChart.generateLegend();
-				$('#charts-container').append(legend);
-			});
-		} displayBarChart();
-
-		$("#radial-chart-btn").click(displayRadialChart);
-		$("#bar-chart-btn").click(displayBarChart);
-	});
-
-	function deleteTransaction(currentId){
-		if(document.oldData === undefined)
-			document.oldData = {};
-		document.oldData ["row_"+currentId] = $('.trash_'+currentId).closest('tr').html();
-		$('.trash_'+currentId).closest('td').html('<a href="/transactions/'+currentId+'/delete"><button formaction="/transactions/'+currentId+'/delete" data-transaction-id="'+currentId+'" class="pure-button button-primary">Confirm</button></a><button data-transaction-id="'+currentId+'" onclick="negateDeletion('+currentId+')" class="pure-button button-primary">Cancel</button>');
-	};
-
-	function negateDeletion(currentId){
-		$('#delete_'+currentId).closest('tr').html(document.oldData["row_"+currentId]);
-	}
-</script>
+<!-- Javascript helpers for this template -->
+<script type="text/javascript" src="../static/js/dashcharts.js"></script>
+<script type="text/javascript" src="../static/js/deletetransactions.js"></script>
 {% endblock %}
