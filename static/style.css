@@ -96,6 +96,14 @@ a {
 	margin-right: auto;
 }
 
+.warning-hidden {
+	display:none;
+}
+
+.warning-text {
+	color: red;
+}
+
 /* Custom random styles */
 
 /* fa styles */

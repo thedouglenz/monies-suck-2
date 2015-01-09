@@ -6,22 +6,38 @@
 			Add a new transaction
 		</div>
 		<div class="pure-u-1-2">
+			<p id="warning" class="warning-hidden warning-text">Please fill out all fields on this page</p>
 			<form method="POST" action="{{ url_for('add_transaction_post') }}" class="pure-form pure-form-stacked">
 				<fieldset>
-					<input type="date" name="trans_date">
-					<input type="text" name="desc" class="pure-input-1" placeholder="Description">
-					<select type="select" name="category" class="pure-input-1">
+					<input type="date" name="trans_date" required>
+					<input type="text" name="desc" class="pure-input-1" placeholder="Description" required>
+					<select id="select-category" type="select" name="category" class="pure-input-1">
 						<option value="none">Select category...</option>
 						{% for c in categories %}
 							<option value="{{ c.id }}"> {{ c.name }} </option>
 						{% endfor %}
 					</select>
-					<input type="text" name="newcategory" class="pure-input-1" placeholder="Or add a new category">
-					<label for="amount">$</label><input type="number" step="0.01" name="amount" class="pure-input-1" placeholder="0.00">
-					<button type="submit" class="pure-button button-primary pure-input-1"> Add </button>
+					<input id="new-category" type="text" name="newcategory" class="pure-input-1" placeholder="Or add a new category">
+					<label for="amount">$</label><input type="number" step="0.01" name="amount" class="pure-input-1" placeholder="0.00" required>
+					<button id="submit-transaction" type="submit" class="pure-button button-primary pure-input-1"> Add </button>
 				</fieldset>
 			</form>
 		</div>
 	</div>
 </div>
+
+<script>
+
+$(document).ready(function(){
+	$("#submit-transaction").click(function(e) {
+		if($("#select-category").val() == "none" && $("#new-category").val() == "") {
+			e.preventDefault();
+			$("#warning").removeClass("warning-hidden");
+		}
+	});
+	$("form").change(function() {
+		$("#warning").addClass("warning-hidden");
+	});
+});
+</script>
 {% endblock %}
