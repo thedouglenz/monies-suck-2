@@ -13,7 +13,7 @@
 					<select type="select" name="category" class="pure-input-1">
 						<option value="none">Select category...</option>
 						{% for c in categories %}
-							<option value="{{ e.id }}"> {{ c.name }} </option>
+							<option value="{{ c.id }}"> {{ c.name }} </option>
 						{% endfor %}
 					</select>
 					<input type="text" name="newcategory" class="pure-input-1" placeholder="Or add a new category">

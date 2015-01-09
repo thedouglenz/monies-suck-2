@@ -219,7 +219,7 @@ def create_category_post():
 
 @app.route('/categories/<int:category_id>/delete')
 @login_required
-def delete_category(caategory_id):
+def delete_category(category_id):
 	e = Category.query.get(category_id)
 	if not e.user_id == current_user.id:
 		abort(401)
