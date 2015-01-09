@@ -11,6 +11,19 @@
 		<canvas id="dash-chart" width="600" height="400"></canvas>
 	</div>
 	<div class="pure-u-1">
+		<p class="section-header">Things you spend on</p>
+		<div id="list-container">
+			<ul>
+				{% for expense in expensetypes %}
+					<li><span style="color:black;">{{ expense.name }}</span><a class="trash-button" href="{{ url_for('delete_expense_type', expense_type_id=expense.id) }}"><i class="fa fa-trash"></i></a></li>
+				{% else %}
+					You don't spend money on anything! Congrats!
+				{% endfor %}
+			</ul>
+		</div>
+		<a href="{{ url_for('create_expense_type') }}" class="pure-button">add</a>
+	</div>
+	<div class="pure-u-1">
 		<p class="section-header">Transactions</p>
 		<table class="pure-table">
 			<thead>
@@ -25,50 +38,37 @@
 						<form method="POST" action="{{ url_for('update_trans_exp', trans_id=t.id) }}">
 							<select name="expense_id">
 								{% for expense in expensetypes %}
-									<option value="{{ expense.id }}" > {{ expense.name }} </option>
+								<option value="{{ expense.id }}" > {{ expense.name }} </option>
 								{% endfor %}
 							</select>
 							<button type="submit">Ok</button>
 						</form>
-					{% endif %}</td><td>$ {{ t.amount }}</td><td id="delete_{{ t.id }}"><a class="trash-button trash_{{t.id}}" onclick="deleteTransaction({{t.id}})"><i class="fa fa-trash"></i></a></td>
-				</tr>
-				{% else %}
-				<tr>
-					<td colspan="5">No transactions added yet</td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-		<div class="pure-menu pure-menu-open pure-menu-horizontal" id="dash-paginator">
-			<a href="#" class="pure-menu-heading">Navigate</a>
-			<ul>
-				{% if transactions.has_prev %}
+						{% endif %}</td><td>$ {{ t.amount }}</td><td id="delete_{{ t.id }}"><a class="trash-button trash_{{t.id}}" onclick="deleteTransaction({{t.id}})"><i class="fa fa-trash"></i></a></td>
+					</tr>
+					{% else %}
+					<tr>
+						<td colspan="5">No transactions added yet</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<div class="pure-menu pure-menu-open pure-menu-horizontal" id="dash-paginator">
+				<a href="#" class="pure-menu-heading">Navigate</a>
+				<ul>
+					{% if transactions.has_prev %}
 					<li><a href="{{ url_for('dashboard', page=transactions.prev_num) }}">newer </a></li>
-				{% else %}
+					{% else %}
 					<li class="pure-menu-disabled"><a href="#"> newer </a></li>
-				{% endif %}
-				{% if transactions.has_next %}
+					{% endif %}
+					{% if transactions.has_next %}
 					<li><a href="{{ url_for('dashboard', page=transactions.next_num) }}"> older </a></li>
-				{% else %}
-				<li class="pure-menu-disabled"><a href="#"> older </a></li>
-				{% endif %}
-			</ul>
+					{% else %}
+					<li class="pure-menu-disabled"><a href="#"> older </a></li>
+					{% endif %}
+				</ul>
+			</div>
+			<a href="{{ url_for('add_transaction') }}" class="pure-button">add</a>
 		</div>
-		<a href="{{ url_for('add_transaction') }}" class="pure-button">add</a>
-	</div>
-	<div class="pure-u-1">
-		<p class="section-header">Things you spend on</p>
-		<div id="list-container">
-			<ul>
-				{% for expense in expensetypes %}
-					<li><span style="color:black;">{{ expense.name }}</span><a class="trash-button" href="{{ url_for('delete_expense_type', expense_type_id=expense.id) }}"><i class="fa fa-trash"></i></a></li>
-				{% else %}
-					You don't spend money on anything! Congrats!
-				{% endfor %}
-			</ul>
-		</div>
-		<a href="{{ url_for('create_expense_type') }}" class="pure-button">add</a>
-	</div>
 </div>
 
 <!-- Javascript helpers for this template -->
