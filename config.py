@@ -1,5 +1,5 @@
 # pagination
-TRANSACTIONS_PER_PAGE = 5
+TRANSACTIONS_PER_PAGE = 25
 
 # Purple color constant
 COOL_PURPLE = "#333399"
