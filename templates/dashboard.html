@@ -14,14 +14,14 @@
 		<p class="section-header">Things you spend on</p>
 		<div id="list-container">
 			<ul>
-				{% for expense in expensetypes %}
-					<li><span style="color:black;">{{ expense.name }}</span><a class="trash-button" href="{{ url_for('delete_expense_type', expense_type_id=expense.id) }}"><i class="fa fa-trash"></i></a></li>
+				{% for category in categories %}
+					<li><span style="color:black;">{{ category.name }}</span><a class="trash-button" href="{{ url_for('delete_category', category_id=category.id) }}"><i class="fa fa-trash"></i></a></li>
 				{% else %}
 					You don't spend money on anything! Congrats!
 				{% endfor %}
 			</ul>
 		</div>
-		<a href="{{ url_for('create_expense_type') }}" class="pure-button">add</a>
+		<a href="{{ url_for('create_category') }}" class="pure-button">add</a>
 	</div>
 	<div class="pure-u-1">
 		<p class="section-header">Transactions</p>
@@ -34,11 +34,11 @@
 			<tbody>
 				{% for t in transactions.items %}
 				<tr data-row-num="{{t.id}}">
-					<td>{{ t.trans_date.strftime('%m-%d-%Y') }}</td><td>{{ t.desc }}</td><td>  {% if t.expense %}{{ t.expense.name }} {% else %}
+					<td>{{ t.trans_date.strftime('%m-%d-%Y') }}</td><td>{{ t.desc }}</td><td>  {% if t.category %}{{ t.category.name }} {% else %}
 						<form method="POST" action="{{ url_for('update_trans_exp', trans_id=t.id) }}">
-							<select name="expense_id">
-								{% for expense in expensetypes %}
-								<option value="{{ expense.id }}" > {{ expense.name }} </option>
+							<select name="category_id">
+								{% for category in categories %}
+								<option value="{{ category.id }}" > {{ category.name }} </option>
 								{% endfor %}
 							</select>
 							<button type="submit">Ok</button>

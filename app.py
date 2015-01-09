@@ -54,14 +54,14 @@ class User(db.Model):
 		class Meta:
 			fields = ("id", "email", "salary", "last_active_date")
 
-class ExpenseType(db.Model):
-	__tablename__ = 'expense_types'
+class Category(db.Model):
+	__tablename__ = 'categories'
 
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String, unique=True, nullable=False)
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-	user = db.relationship('User',  backref=db.backref('expense_types',lazy='dynamic'))
+	user = db.relationship('User',  backref=db.backref('categories',lazy='dynamic'))
 
 	def __init__(self, name, user_id):
 		self.name = name
@@ -78,22 +78,22 @@ class Transaction(db.Model):
 	trans_date = db.Column(db.DateTime(timezone=True), index=True, nullable=False)
 	desc = db.Column(db.String, nullable=False)
 	amount = db.Column(db.Numeric, nullable=False)
-	expense_type_id = db.Column(db.Integer, db.ForeignKey('expense_types.id'))
+	category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 	user = db.relationship('User',  backref=db.backref('transactions', lazy='dynamic'))
-	expense = db.relationship('ExpenseType', backref=db.backref('expense_types', lazy='dynamic'))
+	category = db.relationship('Category', backref=db.backref('categories', lazy='dynamic'))
 
-	def __init__(self, date, desc, e_type_id, amount, user_id):
+	def __init__(self, date, desc, c_type_id, amount, user_id):
 		self.trans_date = date
 		self.desc = desc
-		self.expense_type_id = e_type_id
+		self.category_id = c_type_id
 		self.amount = amount
 		self.user_id = user_id
 
 	class Serializer(Serializer):
 		class Meta:
-			fields = ("id", "trans_date", "desc", "expense_type_id", "amount", "user_id")
+			fields = ("id", "trans_date", "desc", "category_id", "amount", "user_id")
 
 # ROUTES
 
@@ -117,9 +117,9 @@ def random_color():
 
 def get_monthly_totals(month_num):
 	totals = {}
-	expensetypes = current_user.expense_types.order_by(ExpenseType.name).all()
-	for e in expensetypes:
-		totals[e.name] = db.session.query(db.func.sum(Transaction.amount).label('sum')).filter(Transaction.expense_type_id == e.id, db.func.extract('month', Transaction.trans_date) == month_num).scalar()
+	categories = current_user.categories.order_by(Category.name).all()
+	for e in categories:
+		totals[e.name] = db.session.query(db.func.sum(Transaction.amount).label('sum')).filter(Transaction.category_id == e.id, db.func.extract('month', Transaction.trans_date) == month_num).scalar()
 	#totals = sorted(totals.items(), key=lambda x:x[1], reverse=True)
 	return totals
 
@@ -134,7 +134,7 @@ def decimal_default(obj):
 @login_required
 def dashboard(page=1):
 	transactions = current_user.transactions.order_by(Transaction.trans_date.desc()).paginate(page, TRANSACTIONS_PER_PAGE, False)
-	expensetypes = current_user.expense_types.order_by(ExpenseType.name).all()
+	categories = current_user.categories.order_by(Category.name).all()
 
 	# this month stuff
 	this_month = datetime.datetime.now().month
@@ -142,7 +142,7 @@ def dashboard(page=1):
 
 	totals = get_monthly_totals(this_month)
 
-	return render_template('dashboard.html', expensetypes=expensetypes, transactions=transactions, totals=totals, month_name=month_name)
+	return render_template('dashboard.html', categories=categories, transactions=transactions, totals=totals, month_name=month_name)
 
 @app.route('/api/v1/charts/radial/totals/month')
 @login_required
@@ -203,24 +203,24 @@ def bar_chart_monthly_totals():
 
 	return json.dumps(data, default=decimal_default)
 
-@app.route('/expensetypes/create')
+@app.route('/categories/create')
 @login_required
-def create_expense_type():
-	return render_template('create_expense_type.html')
+def create_category():
+	return render_template('create_category.html')
 
-@app.route('/expensetypes/create', methods=['POST'])
+@app.route('/category/create', methods=['POST'])
 @login_required
-def create_expense_type_post():
-	new_et = ExpenseType(request.form['name'], current_user.id)
-	if new_et.name != None and new_et.name != '':
-		db.session.add(new_et)
+def create_category_post():
+	new_cat = Category(request.form['name'], current_user.id)
+	if new_cat.name != None and new_cat.name != '':
+		db.session.add(new_cat)
 		db.session.commit()
 	return redirect(url_for('dashboard'))
 
-@app.route('/expensetypes/<int:expense_type_id>/delete')
+@app.route('/categories/<int:category_id>/delete')
 @login_required
-def delete_expense_type(expense_type_id):
-	e = ExpenseType.query.get(expense_type_id)
+def delete_category(caategory_id):
+	e = Category.query.get(category_id)
 	if not e.user_id == current_user.id:
 		abort(401)
 	if e:
@@ -231,26 +231,26 @@ def delete_expense_type(expense_type_id):
 @app.route('/transactions/add')
 @login_required
 def add_transaction():
-	expensetypes = current_user.expense_types.order_by(ExpenseType.name).all()
-	return render_template('add_transaction.html', expensetypes=expensetypes)
+	categories = current_user.categories.order_by(Category.name).all()
+	return render_template('add_transaction.html', categories=categories)
 
 @app.route('/transactions/add', methods=["POST"])
 @login_required
 def add_transaction_post():
 	t_date = request.form['trans_date']
 	desc = request.form['desc']
-	e_type_id = request.form['expensetype']
-	new_e_type = request.form['newexpensetype']
+	c_type_id = request.form['category']
+	new_c_type = request.form['newcategory']
 	amount = request.form['amount']
 	user_id = current_user.id
 
-	if e_type_id == "none" and new_e_type != "":
-		new_et = ExpenseType(new_e_type, current_user.id)
-		db.session.add(new_et)
+	if c_type_id == "none" and new_c_type != "":
+		new_cat = Category(new_c_type, current_user.id)
+		db.session.add(new_cat)
 		db.session.commit()
-		e_type_id = new_et.id
+		c_type_id = new_et.id
 
-	new_transaction = Transaction(t_date, desc, e_type_id, amount, user_id);
+	new_transaction = Transaction(t_date, desc, c_type_id, amount, user_id);
 	db.session.add(new_transaction)
 	db.session.commit()
 	return redirect(url_for('dashboard'))
@@ -272,7 +272,7 @@ def update_trans_exp(trans_id):
 	if not t.user_id == current_user.id:
 		abort(401)
 	if t:
-		t.expense_type_id = request.form['expense_id']
+		t.category_id = request.form['category_id']
 		db.session.commit()
 	return redirect(url_for('dashboard'))
 
