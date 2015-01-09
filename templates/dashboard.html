@@ -2,13 +2,15 @@
 {% block content %}
 <div class="pure-g">
 	<div id="charts-container" class="pure-u-1-2">
-		<p class="section-header">Monthly spending for <span style="color:#333399; font-weight:bold;">{{ month_name }}</span> at a glance</p>
-		<div id="chart-controls">
-			<span><i class="fa fa-pie-chart"></i> Charts </span>
-			<button id="radial-chart-btn" class="pure-button button-primary">Radial</button>
-			<button id="bar-chart-btn" class="pure-button button-primary">Bar</button>
-		</div>
-		<canvas id="dash-chart" width="600" height="400"></canvas>
+		{% if categories|length > 0 %}
+			<p class="section-header">Monthly spending for <span style="color:#333399; font-weight:bold;">{{ month_name }}</span> at a glance</p>
+			<div id="chart-controls">
+				<span><i class="fa fa-pie-chart"></i> Charts </span>
+				<button id="radial-chart-btn" class="pure-button button-primary">Radial</button>
+				<button id="bar-chart-btn" class="pure-button button-primary">Bar</button>
+			</div>
+			<canvas id="dash-chart" width="600" height="400"></canvas>
+		{% endif %}
 	</div>
 	<div class="pure-u-1">
 		<p class="section-header">Things you spend on</p>
@@ -72,6 +74,8 @@
 </div>
 
 <!-- Javascript helpers for this template -->
-<script type="text/javascript" src="../static/js/dashcharts.js"></script>
+{% if categories|length > 0 %}
+	<script type="text/javascript" src="../static/js/dashcharts.js"></script>
+{% endif %}
 <script type="text/javascript" src="../static/js/deletetransactions.js"></script>
 {% endblock %}
