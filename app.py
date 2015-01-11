@@ -248,7 +248,7 @@ def add_transaction_post():
 		new_cat = Category(new_c_type, current_user.id)
 		db.session.add(new_cat)
 		db.session.commit()
-		c_type_id = new_et.id
+		c_type_id = new_cat.id
 
 	new_transaction = Transaction(t_date, desc, c_type_id, amount, user_id);
 	db.session.add(new_transaction)
