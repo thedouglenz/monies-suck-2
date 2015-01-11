@@ -54,7 +54,7 @@
 				{% for t in transactions.items %}
 				<tr data-row-num="{{t.id}}">
 					<td>{{ t.trans_date.strftime('%m-%d-%Y') }}</td><td>{{ t.desc }}</td><td>  {% if t.category %}{{ t.category.name }} {% else %}
-						<form method="POST" action="{{ url_for('update_trans_exp', trans_id=t.id) }}">
+						<form method="POST" action="{{ url_for('update_trans_exp', trans_id=t.id) }}"> // TODO: change this endpoint's function name
 							<select name="category_id">
 								{% for category in categories %}
 								<option value="{{ category.id }}" > {{ category.name }} </option>
@@ -62,7 +62,9 @@
 							</select>
 							<button type="submit">Ok</button>
 						</form>
-						{% endif %}</td><td>$ {{ t.amount }}</td><td id="delete_{{ t.id }}"><a class="trash-button trash_{{t.id}}" onclick="deleteTransaction({{t.id}})"><i class="fa fa-trash"></i></a></td>
+						{% endif %}</td>
+						{% if t.get_amount() > 0 %}<td style="color:green;">{% else %} <td> {% endif %} $ {{ t.amount }}</td>
+						<td id="delete_{{ t.id }}"><a class="trash-button trash_{{t.id}}" onclick="deleteTransaction({{t.id}})"><i class="fa fa-trash"></i></a></td>
 					</tr>
 					{% else %}
 					<tr>

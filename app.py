@@ -9,7 +9,7 @@ from marshmallow import Serializer
 import random, json, decimal
 from time_functions import month_add
 
-from config import TRANSACTIONS_PER_PAGE, COOL_PURPLE, COOL_PURPLE_MD, COOL_PURPLE_LT
+from config import TRANSACTIONS_PER_PAGE, COOL_PURPLE, COOL_PURPLE_MD, COOL_PURPLE_LT, INCOME_SIGN, EXPENSE_SIGN
 
 app = Flask(__name__)
 
@@ -80,6 +80,7 @@ class Transaction(db.Model):
 	amount = db.Column(db.Numeric, nullable=False)
 	category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+	sign = db.Column(db.SmallInteger, nullable=False)	# -1 for expense, 1 for income
 
 	user = db.relationship('User',  backref=db.backref('transactions', lazy='dynamic'))
 	category = db.relationship('Category', backref=db.backref('categories', lazy='dynamic'))
@@ -91,9 +92,12 @@ class Transaction(db.Model):
 		self.amount = amount
 		self.user_id = user_id
 
+	def get_amount(self):
+		return self.amount * self.sign
+
 	class Serializer(Serializer):
 		class Meta:
-			fields = ("id", "trans_date", "desc", "category_id", "amount", "user_id")
+			fields = ("id", "trans_date", "desc", "category_id", "amount", "user_id", "sign")
 
 # ROUTES
 
@@ -243,6 +247,7 @@ def add_transaction_post():
 	new_c_type = request.form['newcategory']
 	amount = request.form['amount']
 	user_id = current_user.id
+	sign = int(request.form['sign'])
 
 	if c_type_id == "none" and new_c_type != "":
 		new_cat = Category(new_c_type, current_user.id)
@@ -250,7 +255,7 @@ def add_transaction_post():
 		db.session.commit()
 		c_type_id = new_cat.id
 
-	new_transaction = Transaction(t_date, desc, c_type_id, amount, user_id)
+	new_transaction = Transaction(t_date, desc, c_type_id, amount, user_id, sign)
 	db.session.add(new_transaction)
 	db.session.commit()
 	return redirect(url_for('dashboard'))
@@ -261,7 +266,7 @@ def add_quickform_transaction_post(category):
 	existing_cat = current_user.categories.filter(db.func.lower(Category.name) == db.func.lower(category)).first()
 	today = datetime.datetime.now().date()
 	if existing_cat:
-		t = Transaction(today, existing_cat.name, existing_cat.id, request.form['amount'], current_user.id)
+		t = Transaction(today, existing_cat.name, existing_cat.id, request.form['amount'], current_user.id, EXPENSE_SIGN)
 		db.session.add(t)
 		db.session.commit()
 	else:
@@ -270,7 +275,7 @@ def add_quickform_transaction_post(category):
 		db.session.add(c)
 		db.session.commit()
 		# then create the transaction
-		t = Transaction(today, c.name, c.id, request.form['amount'], current_user.id)
+		t = Transaction(today, c.name, c.id, request.form['amount'], current_user.id, EXPENSE_SIGN)
 		db.session.add(t)
 		db.session.commit()
 	return redirect(url_for('dashboard'))
