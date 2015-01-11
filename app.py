@@ -85,12 +85,13 @@ class Transaction(db.Model):
 	user = db.relationship('User',  backref=db.backref('transactions', lazy='dynamic'))
 	category = db.relationship('Category', backref=db.backref('categories', lazy='dynamic'))
 
-	def __init__(self, date, desc, c_type_id, amount, user_id):
+	def __init__(self, date, desc, c_type_id, amount, user_id, sign):
 		self.trans_date = date
 		self.desc = desc
 		self.category_id = c_type_id
 		self.amount = amount
 		self.user_id = user_id
+		self.sign = sign
 
 	def get_amount(self):
 		return self.amount * self.sign
@@ -236,7 +237,7 @@ def delete_category(category_id):
 @login_required
 def add_transaction():
 	categories = current_user.categories.order_by(Category.name).all()
-	return render_template('add_transaction.html', categories=categories)
+	return render_template('add_transaction.html', categories=categories, EXPENSE_SIGN=EXPENSE_SIGN, INCOME_SIGN=INCOME_SIGN)
 
 @app.route('/transactions/add', methods=["POST"])
 @login_required
