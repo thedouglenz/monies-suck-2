@@ -250,7 +250,7 @@ def add_transaction_post():
 		db.session.commit()
 		c_type_id = new_cat.id
 
-	new_transaction = Transaction(t_date, desc, c_type_id, amount, user_id);
+	new_transaction = Transaction(t_date, desc, c_type_id, amount, user_id)
 	db.session.add(new_transaction)
 	db.session.commit()
 	return redirect(url_for('dashboard'))
@@ -318,4 +318,4 @@ def internal_server_error(error):
 	return render_template('500.html'), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+	app.run(debug=True, host='0.0.0.0')
