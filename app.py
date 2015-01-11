@@ -124,7 +124,7 @@ def get_monthly_totals(month_num):
 	totals = {}
 	categories = current_user.categories.order_by(Category.name).all()
 	for e in categories:
-		totals[e.name] = db.session.query(db.func.sum(Transaction.amount).label('sum')).filter(Transaction.category_id == e.id, db.func.extract('month', Transaction.trans_date) == month_num).scalar()
+		totals[e.name] = db.session.query(db.func.sum(Transaction.amount).label('sum')).filter(Transaction.category_id == e.id, db.func.extract('month', Transaction.trans_date) == month_num, Transaction.sign == EXPENSE_SIGN).scalar()
 	#totals = sorted(totals.items(), key=lambda x:x[1], reverse=True)
 	return totals
 
