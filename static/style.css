@@ -129,4 +129,8 @@ a {
 #dash-paginator {
 	background:inherit;
 }
+
+#transactions-table {
+	font-size: .75em;
+}
 /* app specific */
