@@ -255,6 +255,26 @@ def add_transaction_post():
 	db.session.commit()
 	return redirect(url_for('dashboard'))
 
+@app.route('/transactions/quickform/add/<string:category>', methods=["POST"])
+@login_required
+def add_quickform_transaction_post(category):
+	existing_cat = current_user.categories.filter(db.func.lower(Category.name) == db.func.lower(category)).first()
+	today = datetime.datetime.now().date()
+	if existing_cat:
+		t = Transaction(today, existing_cat.name, existing_cat.id, request.form['amount'], current_user.id)
+		db.session.add(t)
+		db.session.commit()
+	else:
+		# create a new category first
+		c = Category(category, current_user.id)
+		db.session.add(c)
+		db.session.commit()
+		# then create the transaction
+		t = Transaction(today, c.name, c.id, request.form['amount'], current_user.id)
+		db.session.add(t)
+		db.session.commit()
+	return redirect(url_for('dashboard'))
+
 @app.route('/transactions/<int:trans_id>/delete')
 @login_required
 def delete_transaction(trans_id):
