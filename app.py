@@ -106,7 +106,7 @@ def index():
 
 @app.route('/create_db')
 def create_db():
-	db.create_all();
+	db.create_all()
 	return "Database generated"
 
 # FUNCS
