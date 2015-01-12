@@ -149,6 +149,11 @@ def dashboard(page=1):
 
 	return render_template('dashboard.html', categories=categories, transactions=transactions, totals=totals, month_name=month_name)
 
+@app.route('/profile')
+@login_required
+def profile():
+	return render_template('profile.html', user=current_user)
+
 @app.route('/api/v1/charts/radial/totals/month')
 @login_required
 def monthly_totals():

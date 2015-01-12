@@ -21,6 +21,7 @@
   			<h2 class="app-title-color dash-nav" style="display:inline;">monies suck </h2>
         {% if current_user.is_authenticated() %}
           <a href="{{ url_for('dashboard') }}" class="dash-nav" style="color:white;text-decoration:none;"> <i class="fa fa-bar-chart"></i> dashboard</a>
+					<a href="{{ url_for('profile') }}" class="dash-nav" style="color:white;text-decoration:none;"> <i class="fa fa-user"></i> profile </a>
           <a href="{{ url_for('logout') }}" class="dash-nav" style="color:white;text-decoration:none;"> <i class="fa fa-sign-out"></i> logout </a>
           <a href="#" class="app-color dash-nav" style="text-decoration:none;">{{ current_user.email }}</a>
         {% endif %}

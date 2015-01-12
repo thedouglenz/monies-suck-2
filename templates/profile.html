@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="pure-g">
+  <div id="user-data-block" class="pure-u-1 pure-u-md-1-3">
+    <p class="section-header">Your information</p>
+    <dl id="profile-dl">
+      <dt>Email Address</dt><dd>{{ user.email }}</dd>
+      <dt>Password</dt><dd><button class="pure-button button-primary">Coming soon: change password!</button></dd>
+      <dt>Last Active</dt><dd>{{ user.last_active_date }}</dd>
+    </dl>
+  </div>
+</div>
+{% endblock %}

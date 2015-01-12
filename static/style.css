@@ -133,4 +133,34 @@ a {
 #transactions-table {
 	font-size: .75em;
 }
+
+#profile-dl dt {
+	font-weight:bold;
+}
+
+#profile-dl dt {
+	float: left;
+	clear: left;
+	width: 150px;
+}
+
+#first-time-welcome {
+	background-color: #383CD1;
+	color: white;
+	padding: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	opacity: 0.67;
+}
+
+#first-time-welcome strong {
+	border-bottom: 1px solid white;
+	padding: 2px;
+}
+
+#quick-forms {
+	padding: 10px;
+}
+
 /* app specific */

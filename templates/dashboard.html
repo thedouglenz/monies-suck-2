@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="pure-g">
-	<div id="charts-container" class="pure-u-1 pure-u-md-1-2" style="overflow:auto;">
+	<div id="charts-container" class="pure-u-1 pure-u-md-2-5" style="overflow:auto;">
 		{% if categories|length > 0 %}
 			<p class="section-header">Monthly spending for <span style="color:#333399; font-weight:bold;">{{ month_name }}</span> at a glance</p>
 			<div id="chart-controls">
@@ -10,9 +10,17 @@
 				<button id="bar-chart-btn" class="pure-button button-primary">Bar</button>
 			</div>
 			<canvas id="dash-chart" width="600" height="400"></canvas>
+		{% else %}
+			<div id="first-time-welcome">
+				<h3>Welcome to Monies Suck!</h3>
+				<p>Start by adding <strong>categories</strong> or <strong>transactions</strong>!</p>
+				<p>Over time, the data you provide us will help us create an accurate, informative picture of your spending habits and your income.</p>
+				<p>We don't collect any personal data (we don't even know your name!), and we'll never ask you to give us your banking information. We might allow you to do that in the future, but only if you trust us!</p>
+				<p>You are now in the <strong>dashboard</strong>. Click <strong><i class="fa fa-user"></i> profile</strong> in the navigation bar at the top to see all the information we have about you.</p>
+			</div>
 		{% endif %}
 	</div>
-	<div id="quick-forms" class="pure-u-1 pure-u-md-1-2">
+	<div id="quick-forms" class="pure-u-1 pure-u-md-2-5">
 		<p class="section-header">Add a quick transaction for <span style="color:#333399; font-weight:bold;">today</span></p>
 		<form id="quick-form-rent" class="pure-form pure-form-stacked" method="post" action="{{ url_for('add_quickform_transaction_post', category="Rent") }}">
 			<fieldset>
