@@ -25,7 +25,8 @@
 					<label for="income-check" class="pure-radio">
 						<input id="income-check" name="sign" value="{{ INCOME_SIGN }}" type="radio"> Income
 					</label>
-					<button id="submit-transaction" type="submit" class="pure-button button-primary pure-input-1"> Add </button>
+					<button id="submit-transaction" type="submit" class="pure-button button-primary"> Add </button>
+					<a href="{{ url_for('dashboard') }}" class="pure-button button-primary">Cancel</a>
 				</fieldset>
 			</form>
 		</div>

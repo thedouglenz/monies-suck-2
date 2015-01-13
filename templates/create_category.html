@@ -9,7 +9,8 @@
 			<form method="POST" action="{{ url_for('create_category_post') }}" class="pure-form pure-form-stacked">
 				<fieldset>
 					<input type="text" name="name" class="pure-input-1" placeholder="Category name">
-					<button type="submit" class="pure-button button-primary pure-input-1"> Add </button>
+					<button type="submit" class="pure-button button-primary"> Add </button>
+					<a href="{{ url_for('dashboard') }}" class="pure-button button-primary">Cancel</a>
 				</fieldset>
 			</form>
 		</div>
