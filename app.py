@@ -138,6 +138,10 @@ def decimal_default(obj):
 @app.route('/dash/')
 @login_required
 def dashboard(page=1):
+	# Update this user's last active date
+	current_user.last_active_date = datetime.datetime.now()
+	db.session.commit()
+
 	transactions = current_user.transactions.order_by(Transaction.trans_date.desc()).paginate(page, TRANSACTIONS_PER_PAGE, False)
 	categories = current_user.categories.order_by(Category.name).all()
 
