@@ -133,19 +133,12 @@ def decimal_default(obj):
 		return float(obj)
 	raise TypeError
 
-def pg_utcnow():
-	""" Use to get the current time. Result compares to PostgreSQL timestamptz
-	Adapted from http://stackoverflow.com/users/140827/erjiang ; http://stackoverflow.com/questions/796008/cant-subtract-offset-naive-and-offset-aware-datetimes"""
-	import psycopg2
-	return datetime.datetime.utcnow().replace(
-        tzinfo=psycopg2.tz.FixedOffsetTimezone(offset=0, name=None))
-
 @app.route('/dash/<int:page>')
 @app.route('/dash/')
 @login_required
 def dashboard(page=1):
 	# Update this user's last active date
-	current_user.last_active_date = pg_utcnow()
+	current_user.last_active_date = db.func.now()
 	db.session.commit()
 
 	transactions = current_user.transactions.order_by(Transaction.trans_date.desc()).paginate(page, TRANSACTIONS_PER_PAGE, False)
